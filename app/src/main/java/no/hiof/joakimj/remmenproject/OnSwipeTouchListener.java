@@ -1,6 +1,7 @@
 package no.hiof.joakimj.remmenproject;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,6 +12,7 @@ public class OnSwipeTouchListener implements View.OnTouchListener {
 
     public OnSwipeTouchListener (Context ctx){
         gestureDetector = new GestureDetector(ctx, new GestureListener());
+
     }
 
     @Override
