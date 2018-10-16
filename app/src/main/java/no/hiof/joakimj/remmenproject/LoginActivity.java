@@ -1,10 +1,15 @@
 package no.hiof.joakimj.remmenproject;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -12,9 +17,13 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 
@@ -36,13 +45,16 @@ public class LoginActivity extends AppCompatActivity {
 
         createAuthenticationListener();
 
-        googleLoginBtn = findViewById(R.id.loginGoogleBtn);
 
+        googleLoginBtn = findViewById(R.id.loginGoogleBtn);
         googleLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (firebaseAuthStateListener != null)
+
                     firebaseAuth.addAuthStateListener(firebaseAuthStateListener);
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    Toast.makeText(LoginActivity.this, "Signed in as " + user.getDisplayName(), Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -80,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 Toast.makeText(this, "Signed in as " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
+            } else if (resultCode == RESULT_CANCELED    ) {
                 Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
                 finish();
             }

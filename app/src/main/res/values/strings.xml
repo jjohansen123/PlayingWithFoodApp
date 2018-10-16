@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">RemmenProject</string>
+  <string name="app_name">RemmenProject</string>
 
-    <!-- Facebook -->
-    <string name="facebook_app_id">1951216518302142</string>
-    <string name="fb_login_protocol_scheme">fb1951216518302142</string>
+  <!-- Facebook -->
+  <string name="facebook_app_id">1951216518302142</string>
+  <string name="fb_login_protocol_scheme">fb1951216518302142</string>
 
 </resources>
