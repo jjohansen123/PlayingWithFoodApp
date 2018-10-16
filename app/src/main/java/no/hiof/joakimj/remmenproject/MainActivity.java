@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
+import com.firebase.ui.auth.AuthUI;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +23,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ImageView imageView = findViewById(R.id.imageView);
+        Button logoutBtn = findViewById(R.id.logOutBtn);
+
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AuthUI.getInstance().signOut(MainActivity.this);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         AsyncTask.execute(new Runnable() {
             @Override
