@@ -46,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
 
         createAuthenticationListener();
 
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         AsyncTask.execute(new Runnable() {
                 @Override
             public void run() {
@@ -127,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.sign_out_item:
                 AuthUI.getInstance().signOut(this);
+                return true;
+            case R.id.settings_item:
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.favorites_item:
+                intent = new Intent(getApplicationContext(), FavoritesActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

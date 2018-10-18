@@ -6,5 +6,13 @@
         android:id="@+id/sign_out_item"
         android:title="Sign Out"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/settings_item"
+        android:title="Settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/favorites_item"
+        android:title="Favorites"
+        app:showAsAction="always" />
 
 </menu>
