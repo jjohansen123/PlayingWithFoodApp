@@ -1,11 +1,16 @@
 package no.hiof.joakimj.remmenproject;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,21 +20,32 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
+    int currentFoodIndex = 0;
+    public static final String DATA_URL = "http://www.longrunexploration.com/upload/main_banner/2/05/banner.jpg";
+
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
     private ImageButton googleLoginBtn;
+    ArrayList<String> foodImages;
 
     //boolean firstImage = true;
 
@@ -39,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView imageView = findViewById(R.id.imageView);
+        final ImageView imageView = findViewById(R.id.imageView);
         Button logoutBtn = findViewById(R.id.logOutBtn);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -53,16 +69,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AsyncTask.execute(new Runnable() {
-                @Override
-            public void run() {
-                // All your networking logic
-                // should be here
 
-                // https://code.tutsplus.com/tutorials/android-from-scratch-using-rest-apis--cms-27117
-            }
-        });
-
+        foodImages = new ArrayList<String>();
 
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
@@ -72,17 +80,46 @@ public class MainActivity extends AppCompatActivity {
 
             public void onSwipeLeft() {
                 Toast.makeText(MainActivity.this, "Swipe Left", Toast.LENGTH_SHORT).show();
+
+                Picasso.get().load(DATA_URL).fit().into(imageView);
+
+                //takes long picture and stretch it. Should be fixed in the MySql database.
+
+                /*
+                Bitmap bmp = null;
+                URL url = null;
+
+                try {
+                    url = new URL(DATA_URL);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    Log.e("TAGING", "Problem in loading URL" + e);
+                }
+
+                try {
+                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("Tagging", "problem with open Connection " + e);
+                }
+
+                imageView.setImageBitmap(bmp);
+                */
             }
 
             public void onSwipeRight() {
                 Toast.makeText(MainActivity.this, "Swipe Right", Toast.LENGTH_SHORT).show();
+
+
             }
 
             public void onSwipeTop() {
                 Toast.makeText(MainActivity.this, "Swipe Top", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+
 
     @Override
     protected void onResume() {
@@ -163,5 +200,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //test
 
 }

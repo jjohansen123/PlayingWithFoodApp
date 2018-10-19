@@ -1,5 +1,7 @@
 package no.hiof.joakimj.remmenproject;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -52,6 +54,7 @@ public class RequestHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("TAG", "Error converting result "+e.toString());
         }
         return sb.toString();
     }
