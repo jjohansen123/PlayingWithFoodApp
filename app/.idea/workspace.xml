@@ -111,16 +111,16 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/no/hiof/joakimj/remmenproject/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="236">
-              <caret line="251" column="39" selection-start-line="251" selection-start-column="39" selection-end-line="251" selection-end-column="39" />
+            <state relative-caret-position="117">
+              <caret line="50" column="112" selection-start-line="50" selection-start-column="43" selection-end-line="50" selection-end-column="112" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2344#2487#0" expanded="true" />
                 <element signature="e#2486#2487#0" expanded="true" />
-                <element signature="e#7364#7843#0" expanded="true" />
-                <element signature="e#7842#7843#0" expanded="true" />
-                <element signature="e#7845#8094#0" expanded="true" />
-                <element signature="e#8093#8094#0" expanded="true" />
+                <element signature="e#7383#8058#0" expanded="true" />
+                <element signature="e#8057#8058#0" expanded="true" />
+                <element signature="e#8060#8367#0" expanded="true" />
+                <element signature="e#8366#8367#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2821,6 +2821,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="Android Profiler" order="12" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32905984" />
@@ -3211,16 +3212,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/no/hiof/joakimj/remmenproject/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="251" column="39" selection-start-line="251" selection-start-column="39" selection-end-line="251" selection-end-column="39" />
+        <state relative-caret-position="117">
+          <caret line="50" column="112" selection-start-line="50" selection-start-column="43" selection-end-line="50" selection-end-column="112" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2344#2487#0" expanded="true" />
             <element signature="e#2486#2487#0" expanded="true" />
-            <element signature="e#7364#7843#0" expanded="true" />
-            <element signature="e#7842#7843#0" expanded="true" />
-            <element signature="e#7845#8094#0" expanded="true" />
-            <element signature="e#8093#8094#0" expanded="true" />
+            <element signature="e#7383#8058#0" expanded="true" />
+            <element signature="e#8057#8058#0" expanded="true" />
+            <element signature="e#8060#8367#0" expanded="true" />
+            <element signature="e#8366#8367#0" expanded="true" />
           </folding>
         </state>
       </provider>

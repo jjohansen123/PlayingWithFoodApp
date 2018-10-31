@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
     public static final String DATA_URL = "http://www.longrunexploration.com/upload/main_banner/2/05/banner.jpg";
+    public static final String url = "http://81.166.82.90/userapi.php?user_id=2";
 
 
     private FirebaseAuth firebaseAuth;
@@ -222,17 +223,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void getData() {
         try {
-            String url = "http://81.166.82.90/userapi.php?user_id=2";
             JSONObject object = new JSONObject();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-
                     try {
-                        resultText = response.getString("object");
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
 
+                        //adding whats in fNavn to a string
+                        resultText = (obj.getString("fNavn"));
+
+                        //adding string into TextView
                         resultTextView.setText(resultText);
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.i("TAG", "JSONExeption" + e);
