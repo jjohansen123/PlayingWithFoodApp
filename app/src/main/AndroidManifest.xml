@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <!-- usesCleartextTraffic is used with MySql<< changed to a secure database, this line removes. -->
+        <!-- usesCleartextTraffic is used with MySql<< changed to a secure database, this line removes. når begynte dem med dette? -->
 
         <activity android:name=".MainActivity"
             android:label="@string/app_name"
