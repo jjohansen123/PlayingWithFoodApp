@@ -48,16 +48,21 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
-    public static final String DATA_URL = "http://www.longrunexploration.com/upload/main_banner/2/05/banner.jpg";
-    public static final String url = "http://81.166.82.90/userapi.php?user_id=2";
+    public static final String DATA_URL = "http://81.166.82.90/uploads/1.jpg";
+    public static final String url = "http://81.166.82.90/foodapi.php?food_id=1";
 
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
     private ImageButton googleLoginBtn;
-    private TextView resultTextView;
-    private String resultText;
+    private TextView foodNameTextView;
+    private TextView allergiesTextView;
+    private TextView commentsTextView;
+
+    private String foodNameText;
+    private Integer allergiesText;
+    private String commentsText;
 
     RequestQueue requestQueue;
 
@@ -72,25 +77,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final ImageView imageView = findViewById(R.id.imageView);
-        Button logoutBtn = findViewById(R.id.logOutBtn);
-        resultTextView = (TextView) findViewById(R.id.resultTextView);
+        foodImages = new ArrayList<String>();
+
+        foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
+        allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
+        commentsTextView = (TextView) findViewById(R.id.commentsTextView);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
         createAuthenticationListener();
 
         requestQueue = Volley.newRequestQueue(this);
-
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getData();
-            }
-        });
-
-
-        foodImages = new ArrayList<String>();
-
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
             public void onSwipeBottom() {
@@ -101,29 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Swipe Left", Toast.LENGTH_SHORT).show();
 
                 Picasso.get().load(DATA_URL).fit().into(imageView);
-
-                //takes long picture and stretch it. Should be fixed in the MySql database.
-
-                /*
-                Bitmap bmp = null;
-                URL url = null;
-
-                try {
-                    url = new URL(DATA_URL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    Log.e("TAGING", "Problem in loading URL" + e);
-                }
-
-                try {
-                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("Tagging", "problem with open Connection " + e);
-                }
-
-                imageView.setImageBitmap(bmp);
-                */
+                getData();
             }
 
             public void onSwipeRight() {
@@ -232,10 +206,20 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject obj = response.getJSONObject("object");
 
                         //adding whats in fNavn to a string
-                        resultText = (obj.getString("fNavn"));
+                        foodNameText = (obj.getString("foodName"));
+                        commentsText = (obj.getString("comments"));
+                        allergiesText = (obj.getInt("allergier"));
 
                         //adding string into TextView
-                        resultTextView.setText(resultText);
+                        foodNameTextView.setText(foodNameText);
+                        commentsTextView.setText("Kommentar: " + "\n" + commentsText);
+
+                        if(allergiesText == 4) {
+                            allergiesTextView.setText("Gluuuuten");
+                        }
+
+
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.i("TAG", "JSONExeption" + e);
