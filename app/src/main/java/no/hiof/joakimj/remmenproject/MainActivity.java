@@ -18,14 +18,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -45,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
     private ImageButton googleLoginBtn;
+    private TextView resultTextView;
+    private String resultText;
+
+    RequestQueue requestQueue;
+
     ArrayList<String> foodImages;
 
     //boolean firstImage = true;
@@ -57,15 +72,18 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageView imageView = findViewById(R.id.imageView);
         Button logoutBtn = findViewById(R.id.logOutBtn);
+        resultTextView = (TextView) findViewById(R.id.resultTextView);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         createAuthenticationListener();
 
+        requestQueue = Volley.newRequestQueue(this);
+
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getData();
             }
         });
 
@@ -200,6 +218,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //test
+    //get Json
+
+    public void getData() {
+        try {
+            String url = "http://81.166.82.90/userapi.php?user_id=2";
+            JSONObject object = new JSONObject();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+
+                    try {
+                        resultText = response.getString("object");
+
+                        resultTextView.setText(resultText);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("TAG", "JSONExeption" + e);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    Log.i("TAG", "VolleyError" + error);
+
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("TAG", "ObjectRequest" + e);
+        }
+    }
 
 }
