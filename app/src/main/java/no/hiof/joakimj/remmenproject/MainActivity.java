@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
-    public static final String DATA_URL = "http://81.166.82.90/uploads/1.jpg";
-    public static final String url = "http://81.166.82.90/foodapi.php?food_id=1";
+    public static final String DATA_URL = "http://81.166.82.90/uploads/2.jpg";
+    public static final String url = "http://81.166.82.90/foodapi.php?food_id=2";
 
 
     private FirebaseAuth firebaseAuth;
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private String foodNameText;
     private Integer allergiesText;
     private String commentsText;
+    private String allergiesHolder = "";
 
     RequestQueue requestQueue;
 
@@ -214,9 +215,41 @@ public class MainActivity extends AppCompatActivity {
                         foodNameTextView.setText(foodNameText);
                         commentsTextView.setText("Kommentar: " + "\n" + commentsText);
 
-                        if(allergiesText == 4) {
-                            allergiesTextView.setText("Gluuuuten");
+                        allergiesText = 421;
+
+                        while (allergiesText > 0) {
+                            if (allergiesText >= 256) {
+                                allergiesHolder += "Nøtter";
+                                allergiesText -= 256;
+                            } else if (allergiesText >= 128) {
+                                allergiesHolder += "Prius";
+                                allergiesText -= 128;
+                            } else if (allergiesText >= 64) {
+                                allergiesHolder += "Kakestykker";
+                                allergiesText -= 64;
+                            } if (allergiesText >= 32) {
+                                allergiesHolder += "Generelt Alt";
+                                allergiesText -= 32;
+                            } else if (allergiesText >= 16) {
+                                allergiesHolder += "Trøffel";
+                                allergiesText -= 16;
+                            } else if (allergiesText >= 8) {
+                                allergiesHolder += "Egg";
+                                allergiesText -= 8;
+                            } else if (allergiesText >= 4) {
+                                allergiesHolder += "Gluuuuten";
+                                allergiesText -= 4;
+                            } else if (allergiesText >= 2) {
+                                allergiesHolder += "Hund";
+                                allergiesText -= 2;
+                            } else if (allergiesText >= 1) {
+                                allergiesHolder += "Guuten Dag";
+                                allergiesText -= 1;
+                            }
+                            allergiesHolder += "\n";
                         }
+
+                        allergiesTextView.setText(allergiesHolder);
 
 
 
