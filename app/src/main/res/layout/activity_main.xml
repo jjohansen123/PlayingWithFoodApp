@@ -6,53 +6,73 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="fill_parent"
-        android:layout_height="217dp"
-        android:layout_alignParentTop="true"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frameLayout"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="fill_parent"
+            android:layout_height="217dp"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@android:drawable/sym_def_app_icon" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stepSize=".1"
+            android:rating="3.5"
+            android:layout_gravity="bottom|center"/>
+
+
+    </FrameLayout>
+
 
     <TextView
         android:id="@+id/foodNameTextView"
         android:layout_width="244dp"
         android:layout_height="43dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textStyle="bold"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout" />
 
     <TextView
         android:id="@+id/allergiesTextView"
         android:layout_width="121dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="312dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
-        app:layout_constraintStart_toEndOf="@+id/foodNameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.003" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/foodNameTextView" />
 
     <TextView
         android:id="@+id/commentsTextView"
-        android:layout_width="385dp"
-        android:layout_height="wrap_content"
+        android:layout_width="236dp"
+        android:layout_height="wrap_content "
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/foodNameTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.038" />
 
 
 </android.support.constraint.ConstraintLayout>
