@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     //boolean firstImage = true;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
+
             public void onSwipeBottom() {
                 Toast.makeText(MainActivity.this, "Swipe Bottom", Toast.LENGTH_SHORT).show();
             }
@@ -194,6 +197,103 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //get Json
+
+    public class foodinfo{
+        int id;
+        String foodname;
+        String comments;
+        String oppskrift;
+        List<String> allergi;
+    }
+
+
+    public List<String> allergiListe(int allergicode)
+    {
+        int current_allergi = 65536;
+        List<String> output =  new ArrayList<String>();
+
+        while(allergicode > 0)
+        {
+            if(current_allergi > allergicode)
+            {
+                current_allergi /= 2;
+            }
+            else
+            {
+                allergicode -= current_allergi;
+                output.add(allergiKodeTilNavn(current_allergi));
+                current_allergi /= 2;
+            }
+        }
+
+        return output;
+    }
+
+    public String allergiKodeTilNavn(int allergicode)
+    {
+        switch (allergicode) {
+            case 1 : return "Skalldyr";
+            case 2 : return "Laktose";
+            case 4 : return "Egg";
+            case 8 : return "Pianøtt";
+            case 16 : return "Hvete";
+            case 32 : return "Soya";
+            case 64 : return "Fisk";
+            case 128 : return "Lupin";
+            default : return "Ingen";
+        }
+    }
+
+    public foodinfo getFoodList()
+    {
+        final foodinfo output = new foodinfo();
+
+
+        try {
+            JSONObject object = new JSONObject();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
+
+                        output.foodname = (String)(obj.getString("foodName"));
+                        output.comments = (obj.getString("comments"));
+                        allergiesText = (obj.getInt("allergier"));
+
+                        //adding string into TextView
+                        foodNameTextView.setText(foodNameText);
+                        commentsTextView.setText("Kommentar: " + "\n" + commentsText);
+
+                        if(allergiesText == 4) {
+                            allergiesTextView.setText("Gluuuuten");
+                        }
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("TAG", "JSONExeption" + e);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    Log.i("TAG", "VolleyError" + error);
+
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("TAG", "ObjectRequest" + e);
+        }
+
+        return output;
+    }
+
 
     public void getData() {
         try {
