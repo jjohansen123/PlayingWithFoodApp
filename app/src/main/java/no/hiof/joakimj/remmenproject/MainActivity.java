@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
 
+
         requestQueue = Volley.newRequestQueue(this);
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
