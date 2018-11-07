@@ -42,6 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private ImageButton googleLoginBtn;
     private TextView foodNameTextView;
     private TextView allergiesTextView;
     private TextView commentsTextView;
@@ -65,13 +65,13 @@ public class MainActivity extends AppCompatActivity {
     private String foodNameText;
     private Integer allergiesText;
     private String commentsText;
-    private String allergiesHolder = "";
+    private String allergiesHolder;
 
     RequestQueue requestQueue;
 
     ArrayList<String> foodImages;
 
-    //boolean firstImage = true;
+    boolean firstImage = true;
 
 
     @Override
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
 
-
         requestQueue = Volley.newRequestQueue(this);
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
@@ -98,27 +97,23 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onSwipeLeft() {
-                DATA_URL = "http://81.166.82.90/uploads/";
-                DATA_URL = DATA_URL + counterImg;
-                DATA_URL = DATA_URL + ".jpg";
+                if(firstImage) {};
+                DATA_URL = "http://81.166.82.90/uploads/" + counterImg + ".jpg";
                 url = "http://81.166.82.90/foodapi.php?food_id=" + counter;
 
-                Toast.makeText(MainActivity.this,  "Swipe Left " + DATA_URL + counterImg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,  "Swipe Left", Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
             }
 
             public void onSwipeRight() {
                 Toast.makeText(MainActivity.this, "Swipe Right", Toast.LENGTH_SHORT).show();
-
-
             }
 
             public void onSwipeTop() {
                 Toast.makeText(MainActivity.this, "Swipe Top", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 
@@ -203,7 +198,54 @@ public class MainActivity extends AppCompatActivity {
 
     //get Json
 
+    public class foodinfo{
+        int id;
+        String foodname;
+        String comments;
+        String oppskrift;
+        List<String> allergi;
+    }
+
+    public List<String> allergiListe(int allergicode)
+    {
+        int current_allergi = 65536;
+        List<String> output =  new ArrayList<String>();
+
+        while(allergicode > 0)
+        {
+            if(current_allergi > allergicode)
+            {
+                current_allergi /= 2;
+            }
+            else
+            {
+                allergicode -= current_allergi;
+                output.add(allergiKodeTilNavn(current_allergi));
+                current_allergi /= 2;
+            }
+        }
+
+        return output;
+    }
+
+    public String allergiKodeTilNavn(int allergicode)
+    {
+        switch (allergicode) {
+            case 1 : return "Skalldyr";
+            case 2 : return "Laktose";
+            case 4 : return "Egg";
+            case 8 : return "Pianøtt";
+            case 16 : return "Hvete";
+            case 32 : return "Soya";
+            case 64 : return "Fisk";
+            case 128 : return "Lupin";
+            default : return "Ingen";
+        }
+    }
+
     public void getData() {
+
+        final foodinfo output = new foodinfo();
         try {
             JSONObject object = new JSONObject();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -221,8 +263,7 @@ public class MainActivity extends AppCompatActivity {
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
                         commentsTextView.setText("Kommentar: " + "\n" + commentsText);
-
-                        allergiesText = 421;
+                        allergiesHolder = "";
 
                         while (allergiesText > 0) {
                             if (allergiesText >= 256) {
@@ -244,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                                 allergiesHolder += "Egg";
                                 allergiesText -= 8;
                             } else if (allergiesText >= 4) {
-                                allergiesHolder += "Gluuuuten";
+                                allergiesHolder += "Gluten";
                                 allergiesText -= 4;
                             } else if (allergiesText >= 2) {
                                 allergiesHolder += "Hund";
@@ -254,8 +295,8 @@ public class MainActivity extends AppCompatActivity {
                                 allergiesText -= 1;
                             }
                             allergiesHolder += "\n";
-
                         }
+
                         counterImg++;
                         counter++;
                         allergiesTextView.setText(allergiesHolder);
