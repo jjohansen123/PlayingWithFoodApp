@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView foodNameTextView;
     private TextView allergiesTextView;
     private TextView commentsTextView;
+    private ImageView imageView;
 
     private String foodNameText;
     private Integer allergiesText;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ImageView imageView = findViewById(R.id.imageView);
+        imageView = findViewById(R.id.imageView);
         foodImages = new ArrayList<String>();
 
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
@@ -314,6 +315,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                     Log.i("TAG", "VolleyError" + error);
 
+                    Picasso.get().load(R.drawable.placeholder).into(imageView);
+                    foodNameTextView.setText("");
+                    allergiesTextView.setText("");
+                    commentsTextView.setText("No more listings");
                 }
             });
             requestQueue.add(jsonObjectRequest);
