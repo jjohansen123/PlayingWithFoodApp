@@ -48,8 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
-    public static final String DATA_URL = "http://81.166.82.90/uploads/2.jpg";
-    public static final String url = "http://81.166.82.90/foodapi.php?food_id=2";
+    public static int counterImg = 1;
+    public static int counter = 1;
+    public String DATA_URL = "";
+    public String url = "";
 
 
     private FirebaseAuth firebaseAuth;
@@ -96,8 +98,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onSwipeLeft() {
-                Toast.makeText(MainActivity.this, "Swipe Left", Toast.LENGTH_SHORT).show();
+                DATA_URL = "http://81.166.82.90/uploads/";
+                DATA_URL = DATA_URL + counterImg;
+                DATA_URL = DATA_URL + ".jpg";
+                url = "http://81.166.82.90/foodapi.php?food_id=" + counter;
 
+                Toast.makeText(MainActivity.this,  "Swipe Left " + DATA_URL + counterImg, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
             }
@@ -248,8 +254,10 @@ public class MainActivity extends AppCompatActivity {
                                 allergiesText -= 1;
                             }
                             allergiesHolder += "\n";
-                        }
 
+                        }
+                        counterImg++;
+                        counter++;
                         allergiesTextView.setText(allergiesHolder);
 
 
