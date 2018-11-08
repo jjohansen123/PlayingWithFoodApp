@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public static int counter = 1;
     public String DATA_URL = "";
     public String url = "";
-
+    boolean firstImage = true;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
@@ -69,11 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private String allergiesHolder;
 
     RequestQueue requestQueue;
-
     ArrayList<String> foodImages;
-
-    boolean firstImage = true;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -207,19 +204,14 @@ public class MainActivity extends AppCompatActivity {
         List<String> allergi;
     }
 
-    public List<String> allergiListe(int allergicode)
-    {
+    public List<String> allergiListe(int allergicode) {
         int current_allergi = 65536;
         List<String> output =  new ArrayList<String>();
 
-        while(allergicode > 0)
-        {
-            if(current_allergi > allergicode)
-            {
+        while(allergicode > 0) {
+            if(current_allergi > allergicode) {
                 current_allergi /= 2;
-            }
-            else
-            {
+            } else {
                 allergicode -= current_allergi;
                 output.add(allergiKodeTilNavn(current_allergi));
                 current_allergi /= 2;
@@ -229,8 +221,7 @@ public class MainActivity extends AppCompatActivity {
         return output;
     }
 
-    public String allergiKodeTilNavn(int allergicode)
-    {
+    public String allergiKodeTilNavn(int allergicode) {
         switch (allergicode) {
             case 1 : return "Skalldyr";
             case 2 : return "Laktose";
@@ -245,7 +236,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getData() {
-
         final foodinfo output = new foodinfo();
         try {
             JSONObject object = new JSONObject();
@@ -327,5 +317,4 @@ public class MainActivity extends AppCompatActivity {
             Log.i("TAG", "ObjectRequest" + e);
         }
     }
-
 }
