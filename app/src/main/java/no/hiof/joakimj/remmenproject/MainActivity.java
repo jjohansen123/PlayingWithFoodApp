@@ -61,11 +61,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView foodNameTextView;
     private TextView allergiesTextView;
     private TextView commentsTextView;
+    private TextView descriptionTextView;
     private ImageView imageView;
 
     private String foodNameText;
     private Integer allergiesText;
     private String commentsText;
+    private String descriptionText;
     private String allergiesHolder;
 
     RequestQueue requestQueue;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
         allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
         commentsTextView = (TextView) findViewById(R.id.commentsTextView);
+        descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
@@ -198,9 +201,10 @@ public class MainActivity extends AppCompatActivity {
 
     public class foodinfo{
         int id;
-        String foodname;
+        String foodName;
         String comments;
         String oppskrift;
+        String description;
         List<String> allergi;
     }
 
@@ -249,10 +253,12 @@ public class MainActivity extends AppCompatActivity {
                         //adding whats in fNavn to a string
                         foodNameText = (obj.getString("foodName"));
                         commentsText = (obj.getString("comments"));
+                        descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
 
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
+                        descriptionTextView.setText(descriptionText);
                         commentsTextView.setText("Kommentar: " + "\n" + commentsText);
                         allergiesHolder = "";
 
@@ -306,8 +312,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("TAG", "VolleyError" + error);
 
                     Picasso.get().load(R.drawable.placeholder).into(imageView);
-                    foodNameTextView.setText("");
+                        foodNameTextView.setText("");
                     allergiesTextView.setText("");
+                    descriptionTextView.setText("");
                     commentsTextView.setText("No more listings");
                 }
             });
