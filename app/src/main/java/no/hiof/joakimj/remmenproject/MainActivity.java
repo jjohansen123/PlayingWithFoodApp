@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +33,17 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.stepstone.apprating.AppRatingDialog;
+import com.stepstone.apprating.listener.RatingDialogListener;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RatingDialogListener {
 
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
@@ -58,37 +68,52 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private TextView foodNameTextView;
-    private TextView allergiesTextView;
-    private TextView commentsTextView;
-    private TextView descriptionTextView;
+    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
     private ImageView imageView;
 
-    private String foodNameText;
+    private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId;
     private Integer allergiesText;
-    private String commentsText;
-    private String descriptionText;
-    private String allergiesHolder;
+
+    private FloatingActionButton btnFav, btnRating;
 
     RequestQueue requestQueue;
+    RatingBar ratingBar;
     ArrayList<String> foodImages;
+
+//    FirebaseDatabase database;
+    DatabaseReference ratingTbl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imageView = findViewById(R.id.imageView);
-        foodImages = new ArrayList<String>();
-
+        //layout Views
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
         allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
         commentsTextView = (TextView) findViewById(R.id.commentsTextView);
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
+        imageView = findViewById(R.id.imageView);
+        foodImages = new ArrayList<String>();
+
+        btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
+        btnRating = (FloatingActionButton)findViewById(R.id.btn_ratingBar);
+        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+
+        //firebase
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
-        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        userUid = firebaseAuth.getUid();
+      //  ratingTbl = database.getReference("Rating");
+
+
+        btnRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRatingDialog(); 
+            }
+        });
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -126,6 +151,25 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Swipe Top", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showRatingDialog() {
+        new AppRatingDialog.Builder()
+                .setPositiveButtonText("Submit")
+                .setNegativeButtonText("Cancel")
+                .setNoteDescriptions(Arrays.asList("Very Bad", "Not good", "Quite OK", "Good", "Really Good"))
+                .setDefaultRating(1)
+                .setTitle("Rate this food")
+                .setDescription("Please select some stars and give feedback")
+                .setTitleTextColor(R.color.colorPrimary)
+                .setDescriptionTextColor(R.color.colorPrimary)
+                .setHint("Please write your comment here...")
+                .setHintTextColor(R.color.colorAccent)
+                .setCommentTextColor(android.R.color.white)
+                .setCommentBackgroundColor(R.color.colorPrimaryDark)
+                .setWindowAnimation(R.style.RatingDialogFadeAnim)
+                .create(MainActivity.this)
+                .show();
     }
 
 
@@ -208,6 +252,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onNegativeButtonClicked() {
+
+    }
+
+    @Override
+    public void onNeutralButtonClicked() {
+
+    }
+
+    @Override
+    public void onPositiveButtonClicked(int value, @NonNull String comments) {
+        //Get rating and upload to database
+        final Rating rating = new Rating(userUid,
+                foodId,
+                String.valueOf(value),
+                comments);
+        ratingTbl.child(userUid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(userUid).exists()) {
+                    //remove old value
+                    ratingTbl.child(userUid).removeValue();
+                    //update new value
+                    ratingTbl.child(userUid).setValue(rating);
+                } else {
+                    //update new value
+                    ratingTbl.child(userUid).setValue(rating);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     //get Json
 
     public class foodinfo{
@@ -273,6 +355,8 @@ public class MainActivity extends AppCompatActivity {
                         commentsTextView.setText("Kommentar: " + "\n" + commentsText);
                         allergiesHolder = "";
 
+                        foodId = "\"" + counter + "\"";
+
                         while (allergiesText > 0) {
                             if (allergiesText >= 8192) {
                                 allergiesHolder += "Kjøtt Pattedyr";
@@ -337,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("TAG", "VolleyError" + error);
 
                     Picasso.get().load(R.drawable.placeholder).into(imageView);
-                        foodNameTextView.setText("");
+                    foodNameTextView.setText("");
                     allergiesTextView.setText("");
                     descriptionTextView.setText("");
                     commentsTextView.setText("No more listings");
