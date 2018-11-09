@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public static int counter = 1;
     public String DATA_URL = "";
     public String url = "";
-
+    boolean firstImage = true;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
@@ -61,19 +61,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView foodNameTextView;
     private TextView allergiesTextView;
     private TextView commentsTextView;
+    private TextView descriptionTextView;
     private ImageView imageView;
 
     private String foodNameText;
     private Integer allergiesText;
     private String commentsText;
+    private String descriptionText;
     private String allergiesHolder;
 
     RequestQueue requestQueue;
-
     ArrayList<String> foodImages;
-
-    boolean firstImage = true;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +84,11 @@ public class MainActivity extends AppCompatActivity {
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
         allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
         commentsTextView = (TextView) findViewById(R.id.commentsTextView);
+        descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -201,25 +201,21 @@ public class MainActivity extends AppCompatActivity {
 
     public class foodinfo{
         int id;
-        String foodname;
+        String foodName;
         String comments;
         String oppskrift;
+        String description;
         List<String> allergi;
     }
 
-    public List<String> allergiListe(int allergicode)
-    {
+    public List<String> allergiListe(int allergicode) {
         int current_allergi = 65536;
         List<String> output =  new ArrayList<String>();
 
-        while(allergicode > 0)
-        {
-            if(current_allergi > allergicode)
-            {
+        while(allergicode > 0) {
+            if(current_allergi > allergicode) {
                 current_allergi /= 2;
-            }
-            else
-            {
+            } else {
                 allergicode -= current_allergi;
                 output.add(allergiKodeTilNavn(current_allergi));
                 current_allergi /= 2;
@@ -229,8 +225,7 @@ public class MainActivity extends AppCompatActivity {
         return output;
     }
 
-    public String allergiKodeTilNavn(int allergicode)
-    {
+    public String allergiKodeTilNavn(int allergicode) {
         switch (allergicode) {
             case 1 : return "Skalldyr";
             case 2 : return "Laktose";
@@ -245,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getData() {
-
         final foodinfo output = new foodinfo();
         try {
             JSONObject object = new JSONObject();
@@ -259,10 +253,12 @@ public class MainActivity extends AppCompatActivity {
                         //adding whats in fNavn to a string
                         foodNameText = (obj.getString("foodName"));
                         commentsText = (obj.getString("comments"));
+                        descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
 
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
+                        descriptionTextView.setText(descriptionText);
                         commentsTextView.setText("Kommentar: " + "\n" + commentsText);
                         allergiesHolder = "";
 
@@ -316,8 +312,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("TAG", "VolleyError" + error);
 
                     Picasso.get().load(R.drawable.placeholder).into(imageView);
-                    foodNameTextView.setText("");
+                        foodNameTextView.setText("");
                     allergiesTextView.setText("");
+                    descriptionTextView.setText("");
                     commentsTextView.setText("No more listings");
                 }
             });
@@ -327,5 +324,4 @@ public class MainActivity extends AppCompatActivity {
             Log.i("TAG", "ObjectRequest" + e);
         }
     }
-
 }
