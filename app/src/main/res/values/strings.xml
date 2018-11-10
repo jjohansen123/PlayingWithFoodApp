@@ -36,5 +36,44 @@
     <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_units_imperial" translatable="false">imperial</string>
 
+    <!-- Strings from main -->
+    <string name="sign_in_canceled">Login er avbrutt</string>
+    <string name="signed_in_as">Logget inn som</string>
+    <string name="please_write_your_comment_here">Venligst skriv din kommentar her...</string>
+    <string name="please_select_some_stars_and_give_feedback">Venligst velg noen stjerner og gi din tilbakemelding</string>
+    <string name="rate_this_food">Gi tilbakemelding på maten</string>
+    <string name="very_bad">Veldig dårlig</string>
+    <string name="not_good">Ikke godt</string>
+    <string name="quite_ok">Helt OK</string>
+    <string name="good">Bra</string>
+    <string name="really_good">Veldig bra</string>
+    <string name="submit">Send inn</string>
+    <string name="cancel">Avbryt</string>
+    <string name="swipe_right">Sveip høyre</string>
+    <string name="url_webpage">http://81.166.82.90/</string>
+    <string name="uploads">uploads/</string>
+    <string name="jpg">.jpg</string>
+    <string name="foodapi">foodapi.php?food_id=</string>
+    <string name="swipe_left">Svipe venstre</string>
+    <string name="swipe_top">Svipe top</string>
+    <string name="swipe_bottom">Svipe bunn</string>
+    <string name="thank_you_for_evaluating_the_food">Takk for at du vurderer maten.</string>
+    <string name="shellfish">Skalldyr</string>
+    <string name="lactose_milk">Laktose/melk</string>
+    <string name="egg">Egg</string>
+    <string name="peanutt">Peanøtter</string>
+    <string name="gluten_wheat">Gluten/hvete</string>
+    <string name="soy">Soya</string>
+    <string name="fish">Fisk</string>
+    <string name="lupine">Lupin</string>
+    <string name="none">Ingen</string>
+    <string name="comment">Kommentar:</string>
+    <string name="meat_mammal">Kjøtt Pattedyr</string>
+    <string name="sulfur">Svoveldioksid</string>
+    <string name="nuts">Nøtter</string>
+    <string name="celery">Selleri</string>
+    <string name="mustard">Sennep</string>
+    <string name="molluscs">Bløtdyr</string>
+
 
 </resources>

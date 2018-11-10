@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
     private ImageView imageView;
 
-    private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId;
+    private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId, weburl, uploads, foodapi;
     private Integer allergiesText;
 
     private FloatingActionButton btnFav, btnRating;
@@ -94,8 +94,13 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         commentsTextView = (TextView) findViewById(R.id.commentsTextView);
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
+
         imageView = findViewById(R.id.imageView);
         foodImages = new ArrayList<String>();
+
+        weburl = getString(R.string.url_webpage);
+        foodapi = getString(R.string.foodapi);
+        uploads = getString(R.string.uploads);
 
         btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
         btnRating = (FloatingActionButton)findViewById(R.id.btn_ratingBar);
@@ -119,17 +124,17 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
             public void onSwipeBottom() {
-                Toast.makeText(MainActivity.this, "Swipe Bottom", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.swipe_bottom, Toast.LENGTH_SHORT).show();
             }
 
             public void onSwipeLeft() {
                 counterImg++;
                 counter++;
-                if(firstImage) {};
-                DATA_URL = "http://81.166.82.90/uploads/" + counterImg + ".jpg";
-                url = "http://81.166.82.90/foodapi.php?food_id=" + counter;
 
-                Toast.makeText(MainActivity.this,  "Swipe Left", Toast.LENGTH_SHORT).show();
+                DATA_URL = weburl + uploads + counterImg + getString(R.string.jpg);
+                url = weburl + foodapi + counter;
+
+                Toast.makeText(MainActivity.this,  R.string.swipe_left, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
             }
@@ -137,33 +142,33 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             public void onSwipeRight() {
                 counterImg--;
                 counter--;
-                Toast.makeText(MainActivity.this, "Swipe Right", Toast.LENGTH_SHORT).show();
-                if(firstImage) {};
-                DATA_URL = "http://81.166.82.90/uploads/" + counterImg + ".jpg";
-                url = "http://81.166.82.90/foodapi.php?food_id=" + counter;
 
-                Toast.makeText(MainActivity.this,  "Swipe Left", Toast.LENGTH_SHORT).show();
+                DATA_URL = weburl + uploads + counterImg + getString(R.string.jpg);
+                url = weburl + foodapi + counter;
+
+                Toast.makeText(MainActivity.this,  R.string.swipe_right, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
             }
 
             public void onSwipeTop() {
-                Toast.makeText(MainActivity.this, "Swipe Top", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.swipe_top, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void showRatingDialog() {
         new AppRatingDialog.Builder()
-                .setPositiveButtonText("Submit")
-                .setNegativeButtonText("Cancel")
-                .setNoteDescriptions(Arrays.asList("Very Bad", "Not good", "Quite OK", "Good", "Really Good"))
+                .setPositiveButtonText(R.string.submit)
+                .setNegativeButtonText(R.string.cancel)
+                .setNoteDescriptions(Arrays.asList(getString(R.string.very_bad), getString(R.string.not_good),
+                        getString(R.string.quite_ok), getString(R.string.good), getString(R.string.really_good)))
                 .setDefaultRating(1)
-                .setTitle("Rate this food")
-                .setDescription("Please select some stars and give feedback")
+                .setTitle(R.string.rate_this_food)
+                .setDescription(R.string.please_select_some_stars_and_give_feedback)
                 .setTitleTextColor(R.color.colorPrimary)
                 .setDescriptionTextColor(R.color.colorPrimary)
-                .setHint("Please write your comment here...")
+                .setHint(R.string.please_write_your_comment_here)
                 .setHintTextColor(R.color.colorAccent)
                 .setCommentTextColor(android.R.color.white)
                 .setCommentBackgroundColor(R.color.colorPrimaryDark)
@@ -244,9 +249,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         if(requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                Toast.makeText(this, "Signed in as " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.signed_in_as) + user.getDisplayName(), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.sign_in_canceled, Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -281,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                     //update new value
                     ratingTbl.child(userUid).setValue(rating);
                 }
+                Toast.makeText(MainActivity.this, R.string.thank_you_for_evaluating_the_food, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -320,15 +326,15 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     public String allergiKodeTilNavn(int allergicode) {
         switch (allergicode) {
-            case 1 : return "Skalldyr";
-            case 2 : return "Laktose";
-            case 4 : return "Egg";
-            case 8 : return "Pianøtt";
-            case 16 : return "Hvete";
-            case 32 : return "Soya";
-            case 64 : return "Fisk";
-            case 128 : return "Lupin";
-            default : return "Ingen";
+            case 1 : return getString(R.string.shellfish);
+            case 2 : return getString(R.string.lactose_milk);
+            case 4 : return getString(R.string.egg);
+            case 8 : return getString(R.string.peanutt);
+            case 16 : return getString(R.string.gluten_wheat);
+            case 32 : return getString(R.string.soy);
+            case 64 : return getString(R.string.fish);
+            case 128 : return getString(R.string.lupine);
+            default : return getString(R.string.none);
         }
     }
 
@@ -352,53 +358,53 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);
-                        commentsTextView.setText("Kommentar: " + "\n" + commentsText);
+                        commentsTextView.setText(getString(R.string.comment) + "\n" + commentsText);
                         allergiesHolder = "";
 
                         foodId = "\"" + counter + "\"";
 
                         while (allergiesText > 0) {
                             if (allergiesText >= 8192) {
-                                allergiesHolder += "Kjøtt Pattedyr";
+                                allergiesHolder += getString(R.string.meat_mammal);
                                 allergiesText -= 8192;
                             } else if (allergiesText >= 4096) {
-                                allergiesHolder += "Svoveldioksid";
+                                allergiesHolder += getString(R.string.sulfur);
                                 allergiesText -= 4096;
                             } else if (allergiesText >= 2048) {
-                                allergiesHolder += "Bløtdyr";
+                                allergiesHolder += getString(R.string.molluscs);
                                 allergiesText -= 2048;
                             } else if (allergiesText >= 1024) {
-                                allergiesHolder += "Sennep";
+                                allergiesHolder += getString(R.string.mustard);
                                 allergiesText -= 1024;
                             } else if (allergiesText >= 512) {
-                                allergiesHolder += "Selleri";
+                                allergiesHolder += getString(R.string.celery);
                                 allergiesText -= 512;
                             } else if (allergiesText >= 256) {
-                                allergiesHolder += "Nøtter";
+                                allergiesHolder += getString(R.string.nuts);
                                 allergiesText -= 256;
                             } else if (allergiesText >= 128) {
-                                allergiesHolder += "Lupin";
+                                allergiesHolder += getString(R.string.lupine);
                                 allergiesText -= 128;
                             } else if (allergiesText >= 64) {
-                                allergiesHolder += "Fisk";
+                                allergiesHolder += getString(R.string.fish);
                                 allergiesText -= 64;
                             } if (allergiesText >= 32) {
-                                allergiesHolder += "Soya";
+                                allergiesHolder += getString(R.string.soy);
                                 allergiesText -= 32;
                             } else if (allergiesText >= 16) {
-                                allergiesHolder += "Glutenholdig korn";
+                                allergiesHolder += getString(R.string.gluten_wheat);
                                 allergiesText -= 16;
                             } else if (allergiesText >= 8) {
-                                allergiesHolder += "Peanøtter";
+                                allergiesHolder += getString(R.string.peanutt);
                                 allergiesText -= 8;
                             } else if (allergiesText >= 4) {
-                                allergiesHolder += "Egg";
+                                allergiesHolder += getString(R.string.egg);
                                 allergiesText -= 4;
                             } else if (allergiesText >= 2) {
-                                allergiesHolder += "Laktose";
+                                allergiesHolder += getString(R.string.lactose_milk);
                                 allergiesText -= 2;
                             } else if (allergiesText >= 1) {
-                                allergiesHolder += "Skalldyr";
+                                allergiesHolder += getString(R.string.shellfish);
                                 allergiesText -= 1;
                             }
                             allergiesHolder += "\n";
