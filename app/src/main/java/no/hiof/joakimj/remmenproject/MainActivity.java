@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import no.hiof.joakimj.remmenproject.Database.Database;
+
 
 public class MainActivity extends AppCompatActivity implements RatingDialogListener {
 
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
     private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
-    private ImageView imageView;
+    private ImageView imageView, favImage;
 
     private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId, weburl, uploads, foodapi;
     private Integer allergiesText;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
+    Database localDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,15 +97,15 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         commentsTextView = (TextView) findViewById(R.id.commentsTextView);
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
-
         imageView = findViewById(R.id.imageView);
+        favImage = findViewById(R.id.favImage);
         foodImages = new ArrayList<String>();
 
         weburl = getString(R.string.url_webpage);
         foodapi = getString(R.string.foodapi);
         uploads = getString(R.string.uploads);
 
-        btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
+       //btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
         btnRating = (FloatingActionButton)findViewById(R.id.btn_ratingBar);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
 
@@ -110,8 +113,10 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
         userUid = firebaseAuth.getUid();
-      //  ratingTbl = database.getReference("Rating");
 
+        //Local Database
+        //ratingTbl = database.getReference("Rating");
+        localDB = new Database(this);
 
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
             public void onSwipeTop() {
                 Toast.makeText(MainActivity.this, R.string.swipe_top, Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -176,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 .create(MainActivity.this)
                 .show();
     }
-
 
     @Override
     protected void onResume() {
@@ -213,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
         };
     }
-
 
     //menu
     @Override
@@ -297,7 +301,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     }
 
     //get Json
-
     public class foodinfo{
         int id;
         String foodName;
@@ -341,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     public void getData() {
         final foodinfo output = new foodinfo();
         try {
-            JSONObject object = new JSONObject();
+            final JSONObject object = new JSONObject();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -412,8 +415,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 
                         allergiesTextView.setText(allergiesHolder);
-
-
 
                     } catch (JSONException e) {
                         e.printStackTrace();
