@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId, weburl, uploads, foodapi;
     private Integer allergiesText;
+    SearchView searchView = null;
 
     private FloatingActionButton btnFav, btnRating;
 
@@ -224,6 +226,24 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+
+        MenuItem searchItem =  menu.findItem(R.id.action_search);
+
+        final SearchView searchView = (SearchView)searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String url = "https://www.google.com/search?q="+query;
+                Toast.makeText(MainActivity.this, "test " + query, Toast.LENGTH_LONG).show();
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
