@@ -1,4 +1,4 @@
-package no.hiof.joakimj.remmenproject;
+package no.hiof.joakimj.remmenproject.Modell;
 
 public class Rating {
     private String userId;
