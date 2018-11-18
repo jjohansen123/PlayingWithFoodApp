@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
@@ -38,6 +40,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
@@ -48,12 +51,20 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.hiof.joakimj.remmenproject.Database.Database;
 
@@ -62,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
-    public static int counterImg = 1;
-    public static int counter = 1;
+    public static int counterImg = 0;
+    public static int counter = 0;
     public String DATA_URL = "";
     public String url = "";
     public String searchUrl = "";
@@ -75,9 +86,10 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
     private ImageView imageView, favImage;
 
-    private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId, weburl, uploads, foodapi, foodTempHolder;
-    private Integer allergiesText, ratingNumber;
+    private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private Integer allergiesText;
     SearchView searchView = null;
+    private  Float ratingNumber;
 
     private FloatingActionButton btnFav, btnRating;
 
@@ -107,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         weburl = getString(R.string.url_webpage);
         foodapi = getString(R.string.foodapi);
         uploads = getString(R.string.uploads);
+
 
        //btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
         btnRating = (FloatingActionButton)findViewById(R.id.btn_ratingBar);
@@ -234,11 +247,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String url = "https://www.google.com/search?q="+query;
                 Toast.makeText(MainActivity.this, "test " + query, Toast.LENGTH_LONG).show();
-
                 getDataSearch(query);
-
                 searchView.clearFocus();
                 return true;
             }
@@ -302,26 +312,59 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 foodId,
                 String.valueOf(value),
                 comments);
-        ratingTbl.child(userUid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(userUid).exists()) {
-                    //remove old value
-                    ratingTbl.child(userUid).removeValue();
-                    //update new value
-                    ratingTbl.child(userUid).setValue(rating);
-                } else {
-                    //update new value
-                    ratingTbl.child(userUid).setValue(rating);
-                }
-                Toast.makeText(MainActivity.this, R.string.thank_you_for_evaluating_the_food, Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+        String i = rating.getRateValue();
+        //hardcoded to not bug
+        String j = "2";
+        String k = rating.getFoodId();
+        String l = rating.getComment();
 
+        ratingUrl = "http://81.166.82.90/set_rating?rating=" + i +
+                "&user_id=" + j +
+                "&food_id=" + k +
+                "&comments=" + l;
+
+        new SendRating().execute();
+    }
+
+    public class SendRating extends AsyncTask<String, String, String>  {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+                URL url = new URL(ratingUrl);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+
+                String value = reader.readLine();
+                Log.i("TAG", "Result is: " + value);
+
+            } catch (Exception e){
+                Log.i("TAG", "Something went wrong in sendRating: " + e);
             }
-        });
+            return null;
+        }
+/*
+        final String ratingUrl = "http://81.166.82.90/set_rating?rating=" + rating.getRateValue() +
+                "&user_id=" + rating.getUserId() +
+                "&food_id=" + rating.getFoodId() +
+                "&comments=" + rating.getComment();
+*/
     }
 
     //get Json
@@ -381,9 +424,15 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         commentsText = (obj.getString("comments"));
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
-                        ratingNumber = (obj.getInt("rating"));
 
-                        Log.i("Rating", "rating: " + ratingNumber);
+                        if((obj.getString("rating")) == "") {
+                            ratingNumber = 0.0f;
+                        } else {
+                            ratingNumber = BigDecimal.valueOf(obj.getDouble("rating")).floatValue();
+                        }
+
+
+                        Log.i("Rating", "rating: " + (obj.getString("rating")));
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);
@@ -439,7 +488,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                             }
                             allergiesHolder += "\n";
                         }
-
 
                         allergiesTextView.setText(allergiesHolder);
 
@@ -518,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         commentsText = (obj.getString("comments"));
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
-                        ratingNumber = (obj.getInt("rating"));
+                        //ratingNumber = (obj.getInt("rating"));
 
                         //adding string into TextView
                         ratingBar.setRating(Float.parseFloat("2.0"));
