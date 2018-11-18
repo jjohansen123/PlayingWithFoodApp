@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
     private ImageView imageView, favImage;
 
-    private String foodNameText, commentsText, descriptionText, allergiesHolder, userUid, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    static public String userUid, nameUid;
+    private String foodNameText, commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
     private Integer allergiesText;
     SearchView searchView = null;
     private  Float ratingNumber;
@@ -109,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
         userUid = firebaseAuth.getUid();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        nameUid = user.getDisplayName();
 
         //Local Database
         //ratingTbl = database.getReference("Rating");
@@ -252,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 startActivity(intent);
                 return true;
             case R.id.favorites_item:
-                intent = new Intent(getApplicationContext(), FavoritesActivity.class);
+                intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -307,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         new SendRating().execute();
     }
 
-    public class SendRating extends AsyncTask<String, String, String>  {
+    public class SendRating extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {
