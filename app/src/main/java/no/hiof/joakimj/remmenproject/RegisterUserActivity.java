@@ -53,24 +53,36 @@ public class RegisterUserActivity extends AppCompatActivity {
         firstnameText.setText(firstname);
         surnameText.setText(surname);
 
-
-
-
         cB1 = findViewById(R.id.checkBox1);
+        cB1.setText(R.string.shellfish);
         cB2 = findViewById(R.id.checkBox2);
+        cB2.setText(R.string.lactose_milk);
         cB3 = findViewById(R.id.checkBox3);
+        cB3.setText(R.string.egg);
         cB4 = findViewById(R.id.checkBox4);
+        cB4.setText(R.string.peanutt);
         cB5 = findViewById(R.id.checkBox5);
+        cB5.setText(R.string.gluten_wheat);
         cB6 = findViewById(R.id.checkBox6);
+        cB6.setText(R.string.soy);
         cB7 = findViewById(R.id.checkBox7);
+        cB7.setText(R.string.fish);
         cB8 = findViewById(R.id.checkBox8);
+        cB8.setText(R.string.lupine);
         cB9 = findViewById(R.id.checkBox9);
+        cB9.setText(R.string.nuts);
         cB10 = findViewById(R.id.checkBox10);
+        cB10.setText(R.string.celery);
         cB11 = findViewById(R.id.checkBox11);
+        cB11.setText(R.string.mustard);
         cB12 = findViewById(R.id.checkBox12);
+        cB12.setText(R.string.molluscs);
         cB13 = findViewById(R.id.checkBox13);
+        cB13.setText(R.string.sulfur);
         cB14 = findViewById(R.id.checkBox14);
+        cB14.setText(R.string.meat_mammal);
         cB15 = findViewById(R.id.checkBox15);
+        cB15.setText("not yet implemented");
     }
 
 
