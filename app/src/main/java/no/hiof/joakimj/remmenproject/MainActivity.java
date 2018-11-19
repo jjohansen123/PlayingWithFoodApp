@@ -408,14 +408,17 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
 
+                        Log.i("Rating", "rating: " + (obj.getString("rating")));
                         if((obj.getString("rating")) == "") {
                             ratingNumber = 0.0f;
+                            Log.i("Rating", "rating: " + (obj.getString("rating")));
                         } else {
                             ratingNumber = BigDecimal.valueOf(obj.getDouble("rating")).floatValue();
+                            Log.i("Rating", "rating: " + (obj.getString("rating")));
                         }
 
 
-                        Log.i("Rating", "rating: " + (obj.getString("rating")));
+
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);

@@ -130,7 +130,7 @@
 
                     <RatingBar
                         android:id="@+id/ratingBar"
-                        android:rating="0"
+                        android:rating="0.0"
                         android:max="5"
                         android:isIndicator="true"
                         android:layout_width="wrap_content"
