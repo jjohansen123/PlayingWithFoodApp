@@ -57,6 +57,8 @@ import no.hiof.joakimj.remmenproject.Modell.Comment;
 import no.hiof.joakimj.remmenproject.Modell.Helpingcode;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
 
+import static no.hiof.joakimj.remmenproject.Fragment.CommentFragment.COMMENT_INDEX;
+
 
 public class MainActivity extends AppCompatActivity implements RatingDialogListener {
 
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -149,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
 
             public void onSwipeLeft() {
+                CommentFragment.index++;
                 counterImg++;
                 counter++;
 
@@ -158,11 +161,14 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 Toast.makeText(MainActivity.this, R.string.swipe_left, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
+
+
             }
 
             public void onSwipeRight() {
                 counterImg--;
                 counter--;
+
 
                 DATA_URL = weburl + uploads + counterImg + getString(R.string.jpg);
                 url = weburl + foodapi + counter;
@@ -567,9 +573,17 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 */
     }
-    static public String url2 = "http://81.166.82.90/comment.php?food_id=0";
+
+    public interface GetDataEventListener {
+        void dataLoaded(List<Comment> commentList);
+    }
+
+
+    static public String url2 = "http://81.166.82.90/comment.php?food_id=";
     static public JSONObject tempobject;
     static public List<Comment> tempcomment = new ArrayList<>();
+
+    /*
     static public List<Comment> getJsonData() {
         try {
             Log.i("reeeeee7", "her blir starter JSON data");
@@ -591,13 +605,15 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         comment.setComment(tempobject.getString("comment"));
                         comment.setfName(tempobject.getString("fNavn"));
                         comment.setRating(tempobject.getInt("rating"));
+                        Log.i("reeeeee17", "her legges det til tempcomment");
                         tempcomment.add(comment);
+                        Log.i("reeeeee18", "her er vi etter det blir lagt til tempcomment" + tempobject.getString("comment"));
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.i("reeeeee3", "JSONExeption" + e);
+                        Log.i("reeeeee14", "JSONExeption" + e.toString());
                     } catch (Exception e)
                     {
-                        Log.i("reeeeee8", "ObjectRequest" + e);
+                        Log.i("reeeeee15", "ObjectRequest" + e.toString());
                     }
                 }
             }, new Response.ErrorListener() {
@@ -611,6 +627,57 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             e.printStackTrace();
             Log.i("reeeeee5", "ObjectRequest" + e);
         }
+        Log.i("reeeeee16", "her returneres JSON stuff i comment form " + tempcomment.get(0).comment);
+        return tempcomment;
+    }
+*/
+
+    static public List<Comment> getJsonData(final GetDataEventListener getDataEventListener) {
+        try {
+            Log.i("reeeeee7", "her blir starter JSON data");
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2 + counter, null, new Response.Listener<JSONObject>() {
+
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.i("reeeeee3", "her starter json kall");
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
+                        JSONObject tempobject = obj;
+                        Log.i("reeeeee4", "her testes JSON output: " + tempobject.getString("comment"));
+                        Log.i("asd", "her testes JSON output: " + tempobject.getString("fNavn"));
+                        Log.i("asd", "her testes JSON output: " + tempobject.getString("rating"));
+                        Comment comment = new Comment();
+                        comment.setComment(tempobject.getString("comment"));
+                        comment.setfName(tempobject.getString("fNavn"));
+                        comment.setRating(tempobject.getInt("rating"));
+                        tempcomment.add(comment);
+
+                        getDataEventListener.dataLoaded(tempcomment);
+
+                        Log.i("reeeeee18", "her er vi etter det blir lagt til tempcomment" + tempobject.getString("comment"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("reeeeee14", "JSONExeption" + e.toString());
+                    } catch (Exception e)
+                    {
+                        Log.i("reeeeee15", "ObjectRequest" + e.toString());
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("reeeeee5", "JSONExeption" + error);
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("reeeeee5", "ObjectRequest" + e);
+        }
+        Log.i("reeeeee16", "her returneres JSON stuff i comment form " + tempcomment.get(0).comment);
         return tempcomment;
     }
 

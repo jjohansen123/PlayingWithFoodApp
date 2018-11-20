@@ -42,7 +42,7 @@ public class CommentFragment extends android.support.v4.app.Fragment {
     private TextView commentTextView;
     private RatingBar ratingBar;
     private List<Comment> commentList = new ArrayList<Comment>();
-    private int index = 0;
+    public static int index = 0;
     private Comment commentholder;
     public CommentFragment() {
         // Required empty public constructor
@@ -63,6 +63,8 @@ public class CommentFragment extends android.support.v4.app.Fragment {
         ratingBar = fragmentView.findViewById(R.id.rtbProductRating);
 
         index = savedInstanceState == null? DEFAULT_COMMENT_INDEX : savedInstanceState.getInt(COMMENT_INDEX, DEFAULT_COMMENT_INDEX);
+        index = 0;
+
 
         setCommentOnView(index);
         index++;
@@ -75,22 +77,60 @@ public class CommentFragment extends android.support.v4.app.Fragment {
         outState.putInt(COMMENT_INDEX, index);
     }
 
+
+    public void setCommentOnView (int index) {
+        //  commentList = Helpingcode.getCommentData();
+        Log.i("reeeeee9", "exception " + commentList);
+
+        RequestQueue requestQueue;
+        //static public Comment temp = new Comment();
+
+        try {
+            Log.i("reeeeee10", "nå skal den spør om jsondata");
+
+            MainActivity.getJsonData(new MainActivity.GetDataEventListener() {
+
+                @Override
+                public void dataLoaded(List<Comment> commentList) {
+                    fNameTextView.setText(commentList.get(0).fName);
+                    commentTextView.setText(commentList.get(0).comment);
+                    ratingBar.setRating(commentList.get(0).rating);
+
+                }
+            });
+
+        }catch(Exception e)
+        {
+            //Log.i("reeeeee11", "her har han mottat json data " + obj);
+        }
+    }
+    /*
     public void setCommentOnView (int index) {
       //  commentList = Helpingcode.getCommentData();
-        Log.i("reeeeee8", "exception " + commentList);
+        Log.i("reeeeee9", "Set comment on view starter");
 
          RequestQueue requestQueue;
                 //static public Comment temp = new Comment();
 
             try {
+                Log.i("reeeeee10", "nå skal den spør om jsondata");
+                List<Comment> obj = MainActivity.getJsonData();
+                Log.i("reeeeee11", "her har han mottat json data " + obj.get(0).comment);
 
-                JSONObject obj = MainActivity.getJsonData();
-                Log.i("reeeee2", "exception " + obj);
+                while(true)
+                {
+                    //Log.i("reeeeee13", "her spammes en while loop til den har data" + obj.get(0).comment);
+                    if(obj.get(0).comment != null)
+                    {
+                        Log.i("reeeeee12", "if testen er fullført ");
+                        fNameTextView.setText(obj.get(0).fName);
+                        commentTextView.setText(obj.get(0).comment);
 
-                fNameTextView.setText((obj.getString("comment")));
-                commentTextView.setText((obj.getString("fNavn")));
+                        ratingBar.setRating(Integer.valueOf((obj.get(0).rating)));
+                        break;
+                    }
+                }
 
-                ratingBar.setRating(Integer.valueOf((obj.getString("rating"))));
 
                 Log.i("reeeee", "se her: ");
 
@@ -98,6 +138,6 @@ public class CommentFragment extends android.support.v4.app.Fragment {
                 e.printStackTrace();
                 Log.i("reeee", "ObjectRequest" + e);
             }
-    }
+    }*/
 
 }

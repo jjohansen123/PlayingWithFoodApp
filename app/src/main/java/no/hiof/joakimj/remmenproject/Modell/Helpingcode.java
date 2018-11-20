@@ -27,14 +27,12 @@ public class Helpingcode {
     {
         try {
                         commentData.clear();
-                        JSONObject obj = MainActivity.getJsonData();
-            Log.i("reeeee2", "exception " + obj);
+                        //JSONObject obj = MainActivity.getJsonData();
+            Log.i("reeeee2", "exception " );
 
 
 
-            test[0] =  (obj.getString("comment"));
-            test[1] =  (obj.getString("fNavn"));
-            test[2] =  (obj.getString("rating"));
+
 
                         commentData.add(temp);
                         Log.i("reeeee", "se her: ");
