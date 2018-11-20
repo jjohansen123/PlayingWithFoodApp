@@ -3,10 +3,14 @@ package no.hiof.joakimj.remmenproject;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +32,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -38,6 +43,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,7 +52,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Database.Database;
+import no.hiof.joakimj.remmenproject.Fragment.CommentFragment;
+import no.hiof.joakimj.remmenproject.Modell.Comment;
+import no.hiof.joakimj.remmenproject.Modell.Helpingcode;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
+
+import static no.hiof.joakimj.remmenproject.Fragment.CommentFragment.COMMENT_INDEX;
 
 
 public class MainActivity extends AppCompatActivity implements RatingDialogListener {
@@ -63,34 +74,35 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
+    private TextView foodNameTextView, allergiesTextView, contentTextView, descriptionTextView;
     private ImageView imageView, favImage;
 
     static public String userUid, nameUid;
-    private String foodNameText, commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private String foodNameText, contentText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
     private Integer allergiesText;
     SearchView searchView = null;
-    private  Float ratingNumber;
+    private Float ratingNumber;
 
     private FloatingActionButton btnFav, btnRating;
 
-    RequestQueue requestQueue;
+    static public RequestQueue requestQueue;
     RatingBar ratingBar;
     ArrayList<String> foodImages;
 
-//    FirebaseDatabase database;
+    //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
     Database localDB;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //layout Views
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
         allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
-        commentsTextView = (TextView) findViewById(R.id.commentsTextView);
+        contentTextView = (TextView) findViewById(R.id.contentTextView);
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
         imageView = findViewById(R.id.imageView);
@@ -101,10 +113,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         foodapi = getString(R.string.foodapi);
         uploads = getString(R.string.uploads);
 
-
-       //btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
-        btnRating = (FloatingActionButton)findViewById(R.id.btn_ratingBar);
-        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+        //btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
+        btnRating = (FloatingActionButton) findViewById(R.id.btn_ratingBar);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
         //firebase
         firebaseAuth = FirebaseAuth.getInstance();
@@ -120,37 +131,49 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRatingDialog(); 
+                showRatingDialog();
             }
         });
 
         requestQueue = Volley.newRequestQueue(this);
 
-        imageView.setOnTouchListener(new OnSwipeTouchListener(this){
+        //fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        CommentFragment commentFragment = new CommentFragment();
+        fragmentManager.beginTransaction()
+                .add(R.id.comment_fragment, commentFragment, "TAG")
+                .commit();
+
+
+        imageView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeBottom() {
                 Toast.makeText(MainActivity.this, R.string.swipe_bottom, Toast.LENGTH_SHORT).show();
             }
 
             public void onSwipeLeft() {
+                CommentFragment.index++;
                 counterImg++;
                 counter++;
 
                 DATA_URL = weburl + uploads + counterImg + getString(R.string.jpg);
                 url = weburl + foodapi + counter;
 
-                Toast.makeText(MainActivity.this,  R.string.swipe_left, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.swipe_left, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
+
+
             }
 
             public void onSwipeRight() {
                 counterImg--;
                 counter--;
 
+
                 DATA_URL = weburl + uploads + counterImg + getString(R.string.jpg);
                 url = weburl + foodapi + counter;
 
-                Toast.makeText(MainActivity.this,  R.string.swipe_right, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.swipe_right, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
             }
@@ -186,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     protected void onResume() {
         super.onResume();
 
-        if(firebaseAuthStateListener != null) {
+        if (firebaseAuthStateListener != null) {
             firebaseAuth.addAuthStateListener(firebaseAuthStateListener);
         }
     }
@@ -194,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     @Override
     protected void onPause() {
         super.onPause();
-        if(firebaseAuthStateListener != null) {
+        if (firebaseAuthStateListener != null) {
             firebaseAuth.removeAuthStateListener(firebaseAuthStateListener);
         }
     }
@@ -224,9 +247,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
-        MenuItem searchItem =  menu.findItem(R.id.action_search);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        final SearchView searchView = (SearchView)searchItem.getActionView();
+        final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -246,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sign_out_item:
                 AuthUI.getInstance().signOut(this);
                 return true;
@@ -267,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 Toast.makeText(this, getString(R.string.signed_in_as) + user.getDisplayName(), Toast.LENGTH_SHORT).show();
@@ -337,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 String value = reader.readLine();
                 Log.i("TAG", "Result is: " + value);
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.i("TAG", "Something went wrong in sendRating: " + e);
             }
             return null;
@@ -351,9 +374,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     }
 
     //get Json
-    public class foodinfo{
+
+    public class foodinfo {
         int id;
         String foodName;
+        String content;
         String comments;
         String oppskrift;
         String description;
@@ -362,10 +387,10 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     public List<String> allergiListe(int allergicode) {
         int current_allergi = 65536;
-        List<String> output =  new ArrayList<String>();
+        List<String> output = new ArrayList<String>();
 
-        while(allergicode > 0) {
-            if(current_allergi > allergicode) {
+        while (allergicode > 0) {
+            if (current_allergi > allergicode) {
                 current_allergi /= 2;
             } else {
                 allergicode -= current_allergi;
@@ -379,15 +404,24 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     public String allergiKodeTilNavn(int allergicode) {
         switch (allergicode) {
-            case 1 : return getString(R.string.shellfish);
-            case 2 : return getString(R.string.lactose_milk);
-            case 4 : return getString(R.string.egg);
-            case 8 : return getString(R.string.peanutt);
-            case 16 : return getString(R.string.gluten_wheat);
-            case 32 : return getString(R.string.soy);
-            case 64 : return getString(R.string.fish);
-            case 128 : return getString(R.string.lupine);
-            default : return getString(R.string.none);
+            case 1:
+                return getString(R.string.shellfish);
+            case 2:
+                return getString(R.string.lactose_milk);
+            case 4:
+                return getString(R.string.egg);
+            case 8:
+                return getString(R.string.peanutt);
+            case 16:
+                return getString(R.string.gluten_wheat);
+            case 32:
+                return getString(R.string.soy);
+            case 64:
+                return getString(R.string.fish);
+            case 128:
+                return getString(R.string.lupine);
+            default:
+                return getString(R.string.none);
         }
     }
 
@@ -404,25 +438,23 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
                         //adding whats in fNavn to a string
                         foodNameText = (obj.getString("foodName"));
-                        commentsText = (obj.getString("comments"));
+                        contentText = (obj.getString("comments"));
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
 
-                        Log.i("Rating", "rating: " + (obj.getString("rating")));
-                        if((obj.getString("rating")) == "") {
-                            ratingNumber = 0.0f;
-                            Log.i("Rating", "rating: " + (obj.getString("rating")));
-                        } else {
+                        try {
                             ratingNumber = BigDecimal.valueOf(obj.getDouble("rating")).floatValue();
                             Log.i("Rating", "rating: " + (obj.getString("rating")));
+                        } catch (JSONException e) {
+                            ratingNumber = 0.0f;
+                            Log.i("Rating", "Rating didnt fetch, no rating: " + e);
                         }
-
 
 
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);
-                        commentsTextView.setText(getString(R.string.comment) + "\n" + commentsText);
+                        contentTextView.setText(getString(R.string.comment) + "\n" + contentText);
                         ratingBar.setRating(ratingNumber);
                         allergiesHolder = "";
 
@@ -453,7 +485,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                             } else if (allergiesText >= 64) {
                                 allergiesHolder += getString(R.string.fish);
                                 allergiesText -= 64;
-                            } if (allergiesText >= 32) {
+                            }
+                            if (allergiesText >= 32) {
                                 allergiesHolder += getString(R.string.soy);
                                 allergiesText -= 32;
                             } else if (allergiesText >= 16) {
@@ -492,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                     foodNameTextView.setText("");
                     allergiesTextView.setText("");
                     descriptionTextView.setText("");
-                    commentsTextView.setText("No more listings");
+                    contentTextView.setText("No more listings");
                 }
             });
             requestQueue.add(jsonObjectRequest);
@@ -500,6 +533,152 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             e.printStackTrace();
             Log.i("TAG", "ObjectRequest" + e);
         }
+/*
+        try {
+            final JSONObject object = new JSONObject();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
+
+                    }
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.i("TAG", "JSONExeption" + e);
+                }
+            }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        Log.i("TAG", "VolleyError" + error);
+
+                        Picasso.get().load(R.drawable.placeholder).into(imageView);
+                        foodNameTextView.setText("");
+                        allergiesTextView.setText("");
+                        descriptionTextView.setText("");
+                        contentTextView.setText("No more listings");
+                    }
+                });
+            requestQueue.add(jsonObjectRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("TAG", "ObjectRequest" + e);
+            }
+
+*/
+    }
+
+    public interface GetDataEventListener {
+        void dataLoaded(List<Comment> commentList);
+    }
+
+
+    static public String url2 = "http://81.166.82.90/comment.php?food_id=";
+    static public JSONObject tempobject;
+    static public List<Comment> tempcomment = new ArrayList<>();
+
+    /*
+    static public List<Comment> getJsonData() {
+        try {
+            Log.i("reeeeee7", "her blir starter JSON data");
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
+
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.i("reeeeee3", "her starter json kall");
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
+                        tempobject = obj;
+                        Log.i("reeeeee4", "her testes JSON output: " + tempobject.getString("comment"));
+                        Log.i("asd", "her testes JSON output: " + tempobject.getString("fNavn"));
+                        Log.i("asd", "her testes JSON output: " + tempobject.getString("rating"));
+                        Comment comment = new Comment();
+                        comment.setComment(tempobject.getString("comment"));
+                        comment.setfName(tempobject.getString("fNavn"));
+                        comment.setRating(tempobject.getInt("rating"));
+                        Log.i("reeeeee17", "her legges det til tempcomment");
+                        tempcomment.add(comment);
+                        Log.i("reeeeee18", "her er vi etter det blir lagt til tempcomment" + tempobject.getString("comment"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("reeeeee14", "JSONExeption" + e.toString());
+                    } catch (Exception e)
+                    {
+                        Log.i("reeeeee15", "ObjectRequest" + e.toString());
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("reeeeee5", "JSONExeption" + error);
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("reeeeee5", "ObjectRequest" + e);
+        }
+        Log.i("reeeeee16", "her returneres JSON stuff i comment form " + tempcomment.get(0).comment);
+        return tempcomment;
+    }
+*/
+
+    static public List<Comment> getJsonData(final GetDataEventListener getDataEventListener) {
+        try {
+            Log.i("reeeeee7", "her blir starter JSON data");
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2 + counter, null, new Response.Listener<JSONObject>() {
+
+
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.i("reeeeee3", "her starter json kall");
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
+                        JSONObject tempobject = obj;
+                        Log.i("reeeeee4", "her testes JSON output: " + tempobject.getString("comment"));
+                        Log.i("asd", "her testes JSON output: " + tempobject.getString("fNavn"));
+                        Log.i("asd", "her testes JSON output: " + tempobject.getString("rating"));
+                        Comment comment = new Comment();
+                        comment.setComment(tempobject.getString("comment"));
+                        comment.setfName(tempobject.getString("fNavn"));
+                        comment.setRating(tempobject.getInt("rating"));
+                        tempcomment.add(comment);
+
+                        getDataEventListener.dataLoaded(tempcomment);
+
+                        Log.i("reeeeee18", "her er vi etter det blir lagt til tempcomment" + tempobject.getString("comment"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("reeeeee14", "JSONExeption" + e.toString());
+                    } catch (Exception e)
+                    {
+                        Log.i("reeeeee15", "ObjectRequest" + e.toString());
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("reeeeee5", "JSONExeption" + error);
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("reeeeee5", "ObjectRequest" + e);
+        }
+        Log.i("reeeeee16", "her returneres JSON stuff i comment form " + tempcomment.get(0).comment);
+        return tempcomment;
     }
 
 
@@ -549,7 +728,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
                         //adding whats in fNavn to a string
                         foodNameText = (obj.getString("foodName"));
-                        commentsText = (obj.getString("comments"));
+                        contentText = (obj.getString("comments"));
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
                         //ratingNumber = (obj.getInt("rating"));
@@ -558,7 +737,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         ratingBar.setRating(Float.parseFloat("2.0"));
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);
-                        commentsTextView.setText(getString(R.string.comment) + "\n" + commentsText);
+                        contentTextView.setText(getString(R.string.comment) + "\n" + contentText);
                         allergiesHolder = "";
 
                         foodId = "\"" + counter + "\"";
@@ -628,7 +807,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                     foodNameTextView.setText("");
                     allergiesTextView.setText("");
                     descriptionTextView.setText("");
-                    commentsTextView.setText("No more listings");
+                    contentTextView.setText("No more listings");
                 }
             });
             requestQueue.add(jsonObjectRequest);

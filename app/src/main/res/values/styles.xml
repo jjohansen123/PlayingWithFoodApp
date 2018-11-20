@@ -7,8 +7,15 @@
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
     <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-
   </style>
+  <!-- Rating Bar Small -->
+
+  <style name="foodRatingBar" parent="@android:style/Widget.RatingBar">
+    <item name="android:progressDrawable">@drawable/ratingstars</item>
+    <item name="android:minHeight">22dip</item>
+    <item name="android:maxHeight">22dip</item>
+  </style>
+
 
   <!-- Rating Dialog -->
   <style name="RatingDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
