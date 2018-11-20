@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
@@ -46,6 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Database.Database;
+import no.hiof.joakimj.remmenproject.Fragment.CommentFragment;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
 
 
@@ -63,18 +67,18 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
+    private TextView foodNameTextView, allergiesTextView, contentTextView, descriptionTextView;
     private ImageView imageView, favImage;
 
     static public String userUid, nameUid;
-    private String foodNameText, commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private String foodNameText, contentText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
     private Integer allergiesText;
     SearchView searchView = null;
     private  Float ratingNumber;
 
     private FloatingActionButton btnFav, btnRating;
 
-    RequestQueue requestQueue;
+    public RequestQueue requestQueue;
     RatingBar ratingBar;
     ArrayList<String> foodImages;
 
@@ -90,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         //layout Views
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
         allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
-        commentsTextView = (TextView) findViewById(R.id.commentsTextView);
+        contentTextView = (TextView) findViewById(R.id.contentTextView);
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
         imageView = findViewById(R.id.imageView);
@@ -100,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         weburl = getString(R.string.url_webpage);
         foodapi = getString(R.string.foodapi);
         uploads = getString(R.string.uploads);
-
 
        //btnFav = (FloatingActionButton)findViewById(R.id.btn_fav);
         btnRating = (FloatingActionButton)findViewById(R.id.btn_ratingBar);
@@ -125,6 +128,14 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         });
 
         requestQueue = Volley.newRequestQueue(this);
+
+        //fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        CommentFragment commentFragment = new CommentFragment();
+        fragmentManager.beginTransaction()
+                .add(R.id.comment_fragment, commentFragment, "TAG")
+                .commit();
+
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this){
             public void onSwipeBottom() {
@@ -351,9 +362,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     }
 
     //get Json
+
     public class foodinfo{
         int id;
         String foodName;
+        String content;
         String comments;
         String oppskrift;
         String description;
@@ -404,25 +417,23 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
                         //adding whats in fNavn to a string
                         foodNameText = (obj.getString("foodName"));
-                        commentsText = (obj.getString("comments"));
+                        contentText = (obj.getString("comments"));
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
 
-                        Log.i("Rating", "rating: " + (obj.getString("rating")));
-                        if((obj.getString("rating")) == "") {
-                            ratingNumber = 0.0f;
-                            Log.i("Rating", "rating: " + (obj.getString("rating")));
-                        } else {
+                        try {
                             ratingNumber = BigDecimal.valueOf(obj.getDouble("rating")).floatValue();
                             Log.i("Rating", "rating: " + (obj.getString("rating")));
+                        } catch (JSONException e) {
+                            ratingNumber = 0.0f;
+                            Log.i("Rating", "Rating didnt fetch, no rating: " + e);
                         }
-
 
 
                         //adding string into TextView
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);
-                        commentsTextView.setText(getString(R.string.comment) + "\n" + commentsText);
+                        contentTextView.setText(getString(R.string.comment) + "\n" + contentText);
                         ratingBar.setRating(ratingNumber);
                         allergiesHolder = "";
 
@@ -453,7 +464,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                             } else if (allergiesText >= 64) {
                                 allergiesHolder += getString(R.string.fish);
                                 allergiesText -= 64;
-                            } if (allergiesText >= 32) {
+                            }
+                            if (allergiesText >= 32) {
                                 allergiesHolder += getString(R.string.soy);
                                 allergiesText -= 32;
                             } else if (allergiesText >= 16) {
@@ -492,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                     foodNameTextView.setText("");
                     allergiesTextView.setText("");
                     descriptionTextView.setText("");
-                    commentsTextView.setText("No more listings");
+                    contentTextView.setText("No more listings");
                 }
             });
             requestQueue.add(jsonObjectRequest);
@@ -500,8 +512,46 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             e.printStackTrace();
             Log.i("TAG", "ObjectRequest" + e);
         }
-    }
+/*
+        try {
+            final JSONObject object = new JSONObject();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
 
+                    }
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.i("TAG", "JSONExeption" + e);
+                }
+            }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        Log.i("TAG", "VolleyError" + error);
+
+                        Picasso.get().load(R.drawable.placeholder).into(imageView);
+                        foodNameTextView.setText("");
+                        allergiesTextView.setText("");
+                        descriptionTextView.setText("");
+                        contentTextView.setText("No more listings");
+                    }
+                });
+            requestQueue.add(jsonObjectRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("TAG", "ObjectRequest" + e);
+            }
+
+*/
+    }
 
     public void getDataSearch(String query) {
         final foodinfo output = new foodinfo();
@@ -549,7 +599,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
                         //adding whats in fNavn to a string
                         foodNameText = (obj.getString("foodName"));
-                        commentsText = (obj.getString("comments"));
+                        contentText = (obj.getString("comments"));
                         descriptionText = (obj.getString("description"));
                         allergiesText = (obj.getInt("allergier"));
                         //ratingNumber = (obj.getInt("rating"));
@@ -558,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                         ratingBar.setRating(Float.parseFloat("2.0"));
                         foodNameTextView.setText(foodNameText);
                         descriptionTextView.setText(descriptionText);
-                        commentsTextView.setText(getString(R.string.comment) + "\n" + commentsText);
+                        contentTextView.setText(getString(R.string.comment) + "\n" + contentText);
                         allergiesHolder = "";
 
                         foodId = "\"" + counter + "\"";
@@ -628,7 +678,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                     foodNameTextView.setText("");
                     allergiesTextView.setText("");
                     descriptionTextView.setText("");
-                    commentsTextView.setText("No more listings");
+                    contentTextView.setText("No more listings");
                 }
             });
             requestQueue.add(jsonObjectRequest);
