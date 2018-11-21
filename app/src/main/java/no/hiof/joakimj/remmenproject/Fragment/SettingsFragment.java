@@ -1,4 +1,4 @@
-package no.hiof.joakimj.remmenproject;
+package no.hiof.joakimj.remmenproject.Fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

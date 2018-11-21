@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -25,9 +26,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -46,6 +50,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Database.Database;
+import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
+import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
 
 
@@ -68,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private ImageView imageView, favImage;
 
     static public String userUid, nameUid;
-    private String foodNameText, commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private String commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    public String foodNameText;
     private Integer allergiesText;
     SearchView searchView = null;
     private  Float ratingNumber;
@@ -81,7 +88,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
+    DatabaseReference dbFavorites;
+    FirebaseDatabase firebaseDatabase;
     Database localDB;
+    FirebaseRecyclerOptions<Favorites> options;
+    FirebaseRecyclerAdapter<Favorites, MyRecyclerViewHolder> adapter; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         userUid = firebaseAuth.getUid();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         nameUid = user.getDisplayName();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        dbFavorites = firebaseDatabase.getReference("FAVORITES_FIREBASE");
 
         //Local Database
         //ratingTbl = database.getReference("Rating");
@@ -161,7 +174,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
             }
         });
+
+        displayFavorites();
     }
+
+
 
     private void showRatingDialog() {
         new AppRatingDialog.Builder()
@@ -324,6 +341,36 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
 
+        //test
+        int food_id = counter;
+        int user_id = 4;
+        String food_name = foodNameText;
+
+        Favorites favorites = new Favorites(food_id, user_id, food_name);
+
+        dbFavorites.push()
+                .setValue(favorites);
+
+    }
+
+    private void displayFavorites() {
+        options =
+                new FirebaseRecyclerOptions.Builder<Favorites>()
+                .setQuery(dbFavorites, Favorites.class)
+                .build();
+        adapter =
+                new FirebaseRecyclerAdapter<Favorites, MyRecyclerViewHolder>(options) {
+                    @Override
+                    protected void onBindViewHolder(@NonNull MyRecyclerViewHolder holder, int position, @NonNull Favorites model) {
+
+                    }
+
+                    @NonNull
+                    @Override
+                    public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                        return null;
+                    }
+                }
 
     }
 

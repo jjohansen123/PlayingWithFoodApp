@@ -5,9 +5,23 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/foodIdTextView"
+        android:layout_weight="1"
+        android:text="10"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/holder"
+        android:layout_weight="1"
+        android:text=":  "/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/foodNameTextViewFav"
         android:layout_weight="40"
         android:text="Name Of Food"/>
+
 
     <Button
         android:id="@+id/removeBtn"
@@ -15,8 +29,5 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Remove" />
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
