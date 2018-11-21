@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     public String url = "";
     public String searchUrl = "";
     boolean firstImage = true;
+    boolean favorited = false;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 startActivity(intent);
                 return true;
             case R.id.favorites_item:
-                intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
+                intent = new Intent(getApplicationContext(), FavoritesActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -308,6 +309,22 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 "&comments=" + l;
 
         new SendRating().execute();
+    }
+
+
+
+    public void addToFavorites(View view) {
+        Toast.makeText(getApplicationContext(), "Favorited . . . ", Toast.LENGTH_LONG).show();
+        if(favorited) {
+            favorited = false;
+        } else {
+            favorited = true;
+        }
+        if(favorited) {
+            favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
+        }
+
+
     }
 
     public class SendRating extends AsyncTask<String, String, String> {
