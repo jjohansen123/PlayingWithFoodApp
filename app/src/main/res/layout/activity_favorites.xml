@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".FavoritesActivity">
 
-    <fragment
+    <ListView
         android:id="@+id/favoritedFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

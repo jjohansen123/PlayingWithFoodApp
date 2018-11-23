@@ -26,7 +26,6 @@ import no.hiof.joakimj.remmenproject.R;
  */
 public class FavoritesFragment extends Fragment {
 
-    //private RecyclerView recyclerView;
     private List<Favorites> favoritesList;
 
     public final static String FAVORITED_INDEX = "favoritedIndex";
@@ -36,8 +35,6 @@ public class FavoritesFragment extends Fragment {
     private TextView foodNameTextView;
 
     private int foodIndex;
-
-    //private OnFavoritedFragmentInteractionListener listener;
 
     public FavoritesFragment() {
         //Required empty constructor
@@ -49,16 +46,12 @@ public class FavoritesFragment extends Fragment {
         //inflate the layout
         favoritesList = Favorites.getData();
 
-        //View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         View fragmentView = inflater.inflate(R.layout.fragment_favorites, container, false);
         foodIdTextView = fragmentView.findViewById(R.id.foodIdTextView);
         foodNameTextView = fragmentView.findViewById(R.id.foodNameTextViewFav);
 
         foodIndex = savedInstanceState == null? DEFAULT_FAVORITED_INDEX : savedInstanceState.getInt(FAVORITED_INDEX, DEFAULT_FAVORITED_INDEX);
-        setDisplayedFavoritedDetail(foodIndex);
-
-        //favoritesList = Favorites.getData();
-        //setUpRecyclerView(view);
+        setDisplayedFavoritedDetail(Favorites.getLength() - 1);
 
         return fragmentView;
     }
@@ -67,50 +60,21 @@ public class FavoritesFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(FAVORITED_INDEX, foodIndex);
     }
-/*
-    @Override
-    public void onStart() {
-        super.onStart();
-        try {
-            listener = (OnFavoritedFragmentInteractionListener).getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().toString() + " must implement OnFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        listener = null;
-    }
 
-    private void setUpRecyclerView(View view) {
-        recyclerView = view.findViewById(R.id.favoritedFragment);
-        FavoritedRecyclerAdapter adapter = new FavoritedRecyclerAdapter(getContext(),
-                favoritesList, new FavoritedRecyclerAdapter.RecyclerViewClickListener() {
-
-            @Override
-            public void onClick(View view, int position) {
-
-            }
-        });
-
-    }
-*/
     public void setDisplayedFavoritedDetail(int foodIndex) {
         this.foodIndex = foodIndex;
         Log.i("TestingFrag", "index: " + foodIndex);
-        favoritesList = Favorites.getData();
 
+        favoritesList = Favorites.getData();
         Favorites favorites = favoritesList.get(foodIndex);
+
+        Log.i("TestingFrag", "foodid: " + favorites.getFood_id());
+
         foodIdTextView.setText(favorites.getFood_id());
         Log.i("TestingFrag", "foodid: " + favorites.getFood_id());
         foodNameTextView.setText(favorites.getFood_name());
         Log.i("TestingFrag", "foodName: " + favorites.getFood_name());
     }
-/*
-    public interface OnFavoritedFragmentInteractionListener {
-        void onFavoritedSelected(int id);
-    }
-*/
+
 }

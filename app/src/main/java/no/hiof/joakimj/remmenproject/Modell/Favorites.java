@@ -1,33 +1,27 @@
 package no.hiof.joakimj.remmenproject.Modell;
 
-import android.graphics.fonts.FontVariationAxis;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Favorites {
-    int food_id;
+    String food_id;
     String food_name;
+    static int length;
     int user_id;
 
-    public Favorites() {
-
+    public static int getLength() {
+        return length;
     }
 
-    public Favorites(int food_id, int user_id, String food_name) {
-        this.food_id = food_id;
-        this.food_name = food_name;
+    public void setLength(int length) {
+        this.length = length;
     }
 
-
-
-
-    public int getFood_id() {
+    public String getFood_id() {
         return food_id;
     }
 
-    public void setFood_id(int food_id) {
+    public void setFood_id(String food_id) {
         this.food_id = food_id;
     }
 
@@ -42,21 +36,21 @@ public class Favorites {
     public static List<Favorites> getData() {
         List<Favorites> data = new ArrayList<>();
 
-        String[] foodId = {"2",
-        "3",
-        "5"};
+        Integer[] foodId = {2,
+        3,
+        5};
 
         String[] foodName = {"Two",
                 "Three",
                 "Five"};
 
+        length = foodId.length;
+
         for(int i = 0; i < foodId.length; i++) {
             Favorites current = new Favorites();
-            current.setFood_id(i);
+            current.setFood_id(String.valueOf(foodId[i]));
             current.setFood_name(foodName[i]);
-            Log.i("TestingFrag", "" + current);
             data.add(current);
-            Log.i("TestingFrag", "" + data.get(i));
         }
         return data;
     }
