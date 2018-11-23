@@ -4,18 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
+import android.widget.Toast;
 
 import java.util.List;
 
-import no.hiof.joakimj.remmenproject.Database.Adapter.FavoritedRecyclerAdapter;
+import no.hiof.joakimj.remmenproject.Holder.FavoritedRecyclerAdapter;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.R;
 
@@ -26,15 +25,9 @@ import no.hiof.joakimj.remmenproject.R;
  */
 public class FavoritesFragment extends Fragment {
 
+    private RecyclerView recyclerView;
     private List<Favorites> favoritesList;
-
-    public final static String FAVORITED_INDEX = "favoritedIndex";
-    private static final int DEFAULT_FAVORITED_INDEX = 1;
-
-    private TextView foodIdTextView;
-    private TextView foodNameTextView;
-
-    private int foodIndex;
+    private OnFavoritedFragmentInteractionListener listener;
 
     public FavoritesFragment() {
         //Required empty constructor
@@ -43,38 +36,53 @@ public class FavoritesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //inflate the layout
+
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_favorites, container, false);
+
         favoritesList = Favorites.getData();
+        setUpRecyclerView(view);
 
-        View fragmentView = inflater.inflate(R.layout.fragment_favorites, container, false);
-        foodIdTextView = fragmentView.findViewById(R.id.foodIdTextView);
-        foodNameTextView = fragmentView.findViewById(R.id.foodNameTextViewFav);
-
-        foodIndex = savedInstanceState == null? DEFAULT_FAVORITED_INDEX : savedInstanceState.getInt(FAVORITED_INDEX, DEFAULT_FAVORITED_INDEX);
-        setDisplayedFavoritedDetail(Favorites.getLength() - 1);
-
-        return fragmentView;
+        return view;
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(FAVORITED_INDEX, foodIndex);
+    public void onStart() {
+        super.onStart();
+        try{
+            listener = (OnFavoritedFragmentInteractionListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + "must implement FragmentInteractionListener");
+        }
+
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
 
-    public void setDisplayedFavoritedDetail(int foodIndex) {
-        this.foodIndex = foodIndex;
-        Log.i("TestingFrag", "index: " + foodIndex);
+        listener = null;
+    }
 
-        favoritesList = Favorites.getData();
-        Favorites favorites = favoritesList.get(foodIndex);
+    public void setUpRecyclerView(View view) {
+        recyclerView = view.findViewById(R.id.favoritedRecyclerView);
+        FavoritedRecyclerAdapter adapter = new FavoritedRecyclerAdapter(getContext(), favoritesList, new FavoritedRecyclerAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(getContext(), favoritesList.get(position).getFood_name() + " clicked", Toast.LENGTH_SHORT).show();
 
-        Log.i("TestingFrag", "foodid: " + favorites.getFood_id());
+                listener.onFavoritedSelected(position);
+            }
+        });
 
-        foodIdTextView.setText(favorites.getFood_id());
-        Log.i("TestingFrag", "foodid: " + favorites.getFood_id());
-        foodNameTextView.setText(favorites.getFood_name());
-        Log.i("TestingFrag", "foodName: " + favorites.getFood_name());
+        recyclerView.setAdapter(adapter);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3); // (Context context, int spanCount)
+        recyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+    public interface OnFavoritedFragmentInteractionListener {
+        void onFavoritedSelected(int id);
     }
 
 }
