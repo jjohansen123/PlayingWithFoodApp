@@ -7,8 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView;
+    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
     private ImageView imageView, favImage;
 
     static public String userUid, nameUid;
@@ -88,11 +90,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
-    DatabaseReference dbFavorites;
-    FirebaseDatabase firebaseDatabase;
     Database localDB;
-    FirebaseRecyclerOptions<Favorites> options;
-    FirebaseRecyclerAdapter<Favorites, MyRecyclerViewHolder> adapter; 
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,9 +122,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         createAuthenticationListener();
         userUid = firebaseAuth.getUid();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        nameUid = user.getDisplayName();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        dbFavorites = firebaseDatabase.getReference("FAVORITES_FIREBASE");
+        nameUid = "Test Testeren"; //user.getDisplayName();
 
         //Local Database
         //ratingTbl = database.getReference("Rating");
@@ -175,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
         });
 
-        displayFavorites();
+
     }
 
 
@@ -341,38 +338,12 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
 
-        //test
-        int food_id = counter;
-        int user_id = 4;
-        String food_name = foodNameText;
+        //FavoritesActivity favoritesActivity = new FavoritesActivity();
+        //favoritesActivity.postFavorites();
 
-        Favorites favorites = new Favorites(food_id, user_id, food_name);
-
-        dbFavorites.push()
-                .setValue(favorites);
 
     }
 
-    private void displayFavorites() {
-        options =
-                new FirebaseRecyclerOptions.Builder<Favorites>()
-                .setQuery(dbFavorites, Favorites.class)
-                .build();
-        adapter =
-                new FirebaseRecyclerAdapter<Favorites, MyRecyclerViewHolder>(options) {
-                    @Override
-                    protected void onBindViewHolder(@NonNull MyRecyclerViewHolder holder, int position, @NonNull Favorites model) {
-
-                    }
-
-                    @NonNull
-                    @Override
-                    public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                        return null;
-                    }
-                }
-
-    }
 
     public class SendRating extends AsyncTask<String, String, String> {
 

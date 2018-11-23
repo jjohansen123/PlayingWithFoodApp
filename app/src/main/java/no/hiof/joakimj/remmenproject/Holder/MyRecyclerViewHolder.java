@@ -8,11 +8,14 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.BreakIterator;
+
 import no.hiof.joakimj.remmenproject.R;
 
 public class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
-    TextView food_name_textView;
-    TextView food_id_textView;
+
+    public TextView food_name_textView;
+    public TextView food_id_textView;
 
     public MyRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
