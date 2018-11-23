@@ -19,7 +19,7 @@ import no.hiof.joakimj.remmenproject.Fragment.FavoritesFragment;
 import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 
-public class FavoritesActivity extends AppCompatActivity {
+public class FavoritesActivity extends AppCompatActivity implements FavoritesFragment.OnFavoritedFragmentInteractionListener{
 
     public static final String FAVORITED_ID_KEY = "food_id";
 
@@ -36,4 +36,8 @@ public class FavoritesActivity extends AppCompatActivity {
         //favoritesFragment.setDisplayedFavoritedDetail(id);
     }
 
+    @Override
+    public void onFavoritedSelected(int id) {
+
+    }
 }

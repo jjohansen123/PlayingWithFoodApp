@@ -42,6 +42,7 @@ public class FavoritesFragment extends Fragment {
 
         favoritesList = Favorites.getData();
         setUpRecyclerView(view);
+        Log.i("Erviher?", "test");
 
         return view;
     }

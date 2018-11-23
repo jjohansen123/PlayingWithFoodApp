@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
+    private DatabaseReference favDatabaseReference;
+
     private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
     private ImageView imageView, favImage;
 
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         //Local Database
         //ratingTbl = database.getReference("Rating");
         localDB = new Database(this);
+        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -337,6 +340,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         if(favorited) {
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
+
+        favDatabaseReference.child("Favorites").push().setValue("2","pølse","4");
+        finish();
 
         //FavoritesActivity favoritesActivity = new FavoritesActivity();
         //favoritesActivity.postFavorites();
