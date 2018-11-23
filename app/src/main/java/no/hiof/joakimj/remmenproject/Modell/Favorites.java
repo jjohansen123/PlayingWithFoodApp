@@ -3,11 +3,24 @@ package no.hiof.joakimj.remmenproject.Modell;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.valueOf;
+
 public class Favorites {
     String food_id;
     String food_name;
     static int length;
     int user_id;
+
+    public Favorites() {
+        // Default constructor required for calls to DataSnapshot.getValue(Favorites.class)
+    }
+
+
+    public Favorites(String food_id, String food_name) {
+        this.food_id = food_id;
+        this.food_name = food_name;
+        this.user_id = valueOf(user_id);
+    }
 
     public static int getLength() {
         return length;

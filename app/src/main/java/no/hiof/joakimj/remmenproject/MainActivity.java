@@ -56,6 +56,8 @@ import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
 
+import static java.lang.String.valueOf;
+
 
 public class MainActivity extends AppCompatActivity implements RatingDialogListener {
 
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
     Database localDB;
+    FirebaseDatabase firebaseDatabase;
 
 
     @Override
@@ -129,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         //Local Database
         //ratingTbl = database.getReference("Rating");
         localDB = new Database(this);
-        favDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        favDatabaseReference = firebaseDatabase.getReference("favorites_foods");
 
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         //Get rating and upload to database
         final Rating rating = new Rating(userUid,
                 foodId,
-                String.valueOf(value),
+                valueOf(value),
                 comments);
 
         String i = rating.getRateValue();
@@ -341,11 +345,14 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
 
-        favDatabaseReference.child("Favorites").push().setValue("2","pølse","4");
-        finish();
+        String tempFoodId = "2";
+        String tempFoodName = "Diggggg";
+        String tempUserId = "4";
 
-        //FavoritesActivity favoritesActivity = new FavoritesActivity();
-        //favoritesActivity.postFavorites();
+        Favorites favorites = new Favorites(tempFoodId.toString(),tempFoodName.toString());
+
+        favDatabaseReference.push().child(tempUserId).setValue(favorites);
+
 
 
     }

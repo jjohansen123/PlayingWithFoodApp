@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Holder.FavoritedRecyclerAdapter;
@@ -42,7 +45,6 @@ public class FavoritesFragment extends Fragment {
 
         favoritesList = Favorites.getData();
         setUpRecyclerView(view);
-        Log.i("Erviher?", "test");
 
         return view;
     }

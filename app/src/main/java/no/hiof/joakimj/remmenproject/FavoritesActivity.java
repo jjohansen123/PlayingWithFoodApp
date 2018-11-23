@@ -21,19 +21,17 @@ import no.hiof.joakimj.remmenproject.Modell.Favorites;
 
 public class FavoritesActivity extends AppCompatActivity implements FavoritesFragment.OnFavoritedFragmentInteractionListener{
 
-    public static final String FAVORITED_ID_KEY = "food_id";
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference favDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
 
-        int id = getIntent().getIntExtra(FAVORITED_ID_KEY, 1);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        favDatabaseReference = firebaseDatabase.getReference("Favorites_food");
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FavoritesFragment favoritesFragment = (FavoritesFragment) fragmentManager.findFragmentById(R.id.favoritedFragment);
-
-        //favoritesFragment.setDisplayedFavoritedDetail(id);
     }
 
     @Override
