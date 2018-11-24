@@ -1,6 +1,8 @@
 package no.hiof.joakimj.remmenproject;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,10 +20,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Map;
 
 import no.hiof.joakimj.remmenproject.Fragment.FavoritesFragment;
 import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
@@ -30,6 +36,7 @@ import no.hiof.joakimj.remmenproject.Modell.Favorites;
 public class FavoritesActivity extends AppCompatActivity{
 
     RecyclerView recyclerView;
+    int favCounter = 0;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference favDatabaseReference;
@@ -46,8 +53,6 @@ public class FavoritesActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
-
-        btnPost = findViewById(R.id.btn_update);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         favDatabaseReference = firebaseDatabase.getReference("favorites_foods");
@@ -86,7 +91,6 @@ public class FavoritesActivity extends AppCompatActivity{
                         .setQuery(favDatabaseReference, Favorites.class)
                         .build();
 
-        Log.i("TAG test", "er jeg her?! " + options.toString());
         adapter =
                 new FirebaseRecyclerAdapter<Favorites, MyRecyclerViewHolder>(options) {
                     @NonNull
@@ -99,40 +103,37 @@ public class FavoritesActivity extends AppCompatActivity{
 
                     @Override
                     protected void onBindViewHolder(@NonNull final MyRecyclerViewHolder holder, int position, @NonNull Favorites model) {
-                        Log.i("TAG test", "er jeg der?!");
-                        final String favoriteId = getRef(position).getKey();
-                        favDatabaseReference.child(favoriteId).addValueEventListener(new ValueEventListener() {
+
+                        final String key= getRef(position).getKey();
+
+
+                        favDatabaseReference.child(key).child("4").addValueEventListener(new ValueEventListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()) {
-                                    
-                                    String favId = dataSnapshot.getValue().toString();
-                                    String favName = dataSnapshot.getValue().toString();
-                                    holder.food_id_textView.setText(.getFood_id());
-                                    Log.i("TAG", "food id: " + favId);
-                                    holder.food_name_textView.setText(favName);
-                                    Log.i("TAG", "food name: " + favName);
+                                if (dataSnapshot.exists()) {
+
+                                    Favorites favorites = dataSnapshot.getValue(Favorites.class);
+                                    Log.i("tag", "dataSnapshot " + favorites.getFood_id());
+
+                                    holder.food_id_textView.setText(favorites.getFood_id());
+                                    holder.food_name_textView.setText(favorites.getFood_name());
+
                                 }
                             }
-
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                             }
-
                         });
-
                     }
 
 
                 };
+
         adapter.startListening();
         recyclerView.setAdapter(adapter);
     }
 
-
-    public void updatePost(View view) {
-        displayFavorites();
-    }
 }

@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         Favorites favorites = new Favorites(tempFoodId.toString(),tempFoodName.toString());
 
-        favDatabaseReference.push().setValue(favorites);
+        favDatabaseReference.push().child(tempUserId).setValue(favorites);
 
 
 

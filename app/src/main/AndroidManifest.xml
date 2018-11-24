@@ -45,7 +45,8 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".RegisterUserActivity"></activity>
+        <activity android:name=".RegisterUserActivity" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>
