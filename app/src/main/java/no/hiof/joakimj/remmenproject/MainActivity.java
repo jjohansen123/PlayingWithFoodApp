@@ -85,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     public DatabaseReference favDatabaseReference;
 
-    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
+    private TextView contentTextView, foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
     private ImageView imageView, favImage;
 
     static public String userUid, nameUid;
-    private String commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private String contentText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
     public String foodNameText;
     private Integer allergiesText;
     SearchView searchView = null;
@@ -274,6 +274,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(MainActivity.this, "test " + query, Toast.LENGTH_LONG).show();
                 getDataSearch(query);
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivity(intent);
                 searchView.clearFocus();
                 return true;
             }
