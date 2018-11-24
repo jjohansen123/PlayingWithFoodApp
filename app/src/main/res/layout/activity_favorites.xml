@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".FavoritesActivity">
 
-    <fragment
-        android:id="@+id/favoritedFragment"
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:name="no.hiof.joakimj.remmenproject.Fragment.FavoritesFragment"
-    />
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:onClick="updatePost"
+        android:id="@+id/btn_update"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/favoritedRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

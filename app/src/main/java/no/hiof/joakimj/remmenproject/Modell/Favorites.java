@@ -19,8 +19,9 @@ public class Favorites {
     public Favorites(String food_id, String food_name) {
         this.food_id = food_id;
         this.food_name = food_name;
-        this.user_id = valueOf(user_id);
     }
+
+
 
     public static int getLength() {
         return length;

@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.firebaseui:firebase-ui-database:4.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:4.2.1'
 
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
 
@@ -60,3 +60,5 @@ buildscript {
 
     }
 }
+
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

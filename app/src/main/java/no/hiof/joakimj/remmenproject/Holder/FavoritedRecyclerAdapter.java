@@ -68,7 +68,6 @@ public class FavoritedRecyclerAdapter extends RecyclerView.Adapter<FavoritedRecy
         public void setData(Favorites favorites) {
             foodIdTextView.setText(favorites.getFood_id());
             foodNameTextView.setText(favorites.getFood_name());
-            Log.i("TESTINGHER", "Tag.. ");
         }
 
         @Override

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private DatabaseReference favDatabaseReference;
+    public DatabaseReference favDatabaseReference;
 
     private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
     private ImageView imageView, favImage;
@@ -345,13 +345,13 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
 
-        String tempFoodId = "2";
-        String tempFoodName = "Diggggg";
+        String tempFoodId = "4";
+        String tempFoodName = "Testavmatrett";
         String tempUserId = "4";
 
         Favorites favorites = new Favorites(tempFoodId.toString(),tempFoodName.toString());
 
-        favDatabaseReference.push().child(tempUserId).setValue(favorites);
+        favDatabaseReference.push().setValue(favorites);
 
 
 
