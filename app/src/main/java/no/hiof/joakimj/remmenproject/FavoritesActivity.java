@@ -3,7 +3,6 @@ package no.hiof.joakimj.remmenproject;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,23 +19,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Map;
-
-import no.hiof.joakimj.remmenproject.Fragment.FavoritesFragment;
 import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 
 public class FavoritesActivity extends AppCompatActivity{
 
     RecyclerView recyclerView;
-    int favCounter = 0;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference favDatabaseReference;
