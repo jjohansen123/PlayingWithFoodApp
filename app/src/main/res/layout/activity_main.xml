@@ -50,14 +50,16 @@
                 android:gravity="center"
                 android:layout_weight="9"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/favImage"
                 android:layout_width="0dp"
-                android:tint="@android:color/black"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/white"
                 android:layout_weight="1"
-                android:src="@drawable/ic_favorite_border_black_24dp" />
+                android:background="@color/fui_transparent"
+                android:backgroundTint="@android:color/white"
+                android:onClick="addToFavorites"
+                android:src="@drawable/ic_favorite_border_black_24dp"
+                android:tint="@android:color/black" />
 
         </LinearLayout>
     </FrameLayout>

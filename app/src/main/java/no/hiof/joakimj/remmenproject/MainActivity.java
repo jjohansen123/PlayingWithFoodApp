@@ -13,10 +13,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,10 +31,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.gson.JsonObject;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
@@ -55,8 +60,11 @@ import no.hiof.joakimj.remmenproject.Database.Database;
 import no.hiof.joakimj.remmenproject.Fragment.CommentFragment;
 import no.hiof.joakimj.remmenproject.Modell.Comment;
 import no.hiof.joakimj.remmenproject.Modell.Helpingcode;
+import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
+import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
 
+import static java.lang.String.valueOf;
 import static no.hiof.joakimj.remmenproject.Fragment.CommentFragment.COMMENT_INDEX;
 
 
@@ -70,15 +78,19 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     public String url = "";
     public String searchUrl = "";
     boolean firstImage = true;
+    boolean favorited = false;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthStateListener;
 
-    private TextView foodNameTextView, allergiesTextView, contentTextView, descriptionTextView;
+    public DatabaseReference favDatabaseReference;
+
+    private TextView foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
     private ImageView imageView, favImage;
 
     static public String userUid, nameUid;
-    private String foodNameText, contentText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private String commentsText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    public String foodNameText;
     private Integer allergiesText;
     SearchView searchView = null;
     private Float ratingNumber;
@@ -92,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
     Database localDB;
+    FirebaseDatabase firebaseDatabase;
 
 
     @Override
@@ -122,11 +135,13 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         createAuthenticationListener();
         userUid = firebaseAuth.getUid();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        nameUid = user.getDisplayName();
+        nameUid = "Test Testeren"; //user.getDisplayName();
 
         //Local Database
         //ratingTbl = database.getReference("Rating");
         localDB = new Database(this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        favDatabaseReference = firebaseDatabase.getReference("favorites_foods");
 
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +198,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
             }
         });
+
+
     }
+
+
 
     private void showRatingDialog() {
         new AppRatingDialog.Builder()
@@ -278,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 startActivity(intent);
                 return true;
             case R.id.favorites_item:
-                intent = new Intent(getApplicationContext(), RegisterUserActivity.class);
+                intent = new Intent(getApplicationContext(), FavoritesActivity.class);
                 startActivity(intent);
                 return true;
             default:
@@ -316,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         //Get rating and upload to database
         final Rating rating = new Rating(userUid,
                 foodId,
-                String.valueOf(value),
+                valueOf(value),
                 comments);
 
         String i = rating.getRateValue();
@@ -332,6 +351,32 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         new SendRating().execute();
     }
+
+
+
+    public void addToFavorites(View view) {
+        Toast.makeText(getApplicationContext(), "Favorited . . . ", Toast.LENGTH_LONG).show();
+        if(favorited) {
+            favorited = false;
+        } else {
+            favorited = true;
+        }
+        if(favorited) {
+            favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
+        }
+
+        String tempFoodId = "4";
+        String tempFoodName = "Testavmatrett";
+        String tempUserId = "4";
+
+        Favorites favorites = new Favorites(tempFoodId.toString(),tempFoodName.toString());
+
+        favDatabaseReference.push().child(tempUserId).setValue(favorites);
+
+
+
+    }
+
 
     public class SendRating extends AsyncTask<String, String, String> {
 
