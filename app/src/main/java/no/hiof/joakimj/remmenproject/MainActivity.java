@@ -273,8 +273,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(MainActivity.this, "test " + query, Toast.LENGTH_LONG).show();
-                getDataSearch(query);
+                //getDataSearch(query);
                 Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                intent.putExtra("Query", query);
                 startActivity(intent);
                 searchView.clearFocus();
                 return true;
@@ -728,140 +729,5 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         return tempcomment;
     }
 
-
-    public void getDataSearch(String query) {
-        final foodinfo output = new foodinfo();
-        try {
-            final JSONObject object = new JSONObject();
-
-            searchUrl = "http://81.166.82.90/foodsearch.php?foodName=" + query;
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, searchUrl, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        //opening the first object in Json
-                        JSONObject obj = response.getJSONObject("object");
-                        foodTempHolder = (obj.getString("food_id"));
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("TAG", "JSONExeption" + e);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                    Log.i("TAG", "VolleyError" + error);
-                }
-            });
-            requestQueue.add(jsonObjectRequest);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("TAG", "ObjectRequest" + e);
-        }
-
-        try {
-            final JSONObject object = new JSONObject();
-
-            searchUrl = "http://81.166.82.90/foodapi.php?food_id=" + 2;
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, searchUrl, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        //opening the first object in Json
-                        JSONObject obj = response.getJSONObject("object");
-
-                        //adding whats in fNavn to a string
-                        foodNameText = (obj.getString("foodName"));
-                        contentText = (obj.getString("comments"));
-                        descriptionText = (obj.getString("description"));
-                        allergiesText = (obj.getInt("allergier"));
-                        //ratingNumber = (obj.getInt("rating"));
-
-                        //adding string into TextView
-                        ratingBar.setRating(Float.parseFloat("2.0"));
-                        foodNameTextView.setText(foodNameText);
-                        descriptionTextView.setText(descriptionText);
-                        contentTextView.setText(getString(R.string.comment) + "\n" + contentText);
-                        allergiesHolder = "";
-
-                        foodId = "\"" + counter + "\"";
-
-                        while (allergiesText > 0) {
-                            if (allergiesText >= 8192) {
-                                allergiesHolder += getString(R.string.meat_mammal);
-                                allergiesText -= 8192;
-                            } else if (allergiesText >= 4096) {
-                                allergiesHolder += getString(R.string.sulfur);
-                                allergiesText -= 4096;
-                            } else if (allergiesText >= 2048) {
-                                allergiesHolder += getString(R.string.molluscs);
-                                allergiesText -= 2048;
-                            } else if (allergiesText >= 1024) {
-                                allergiesHolder += getString(R.string.mustard);
-                                allergiesText -= 1024;
-                            } else if (allergiesText >= 512) {
-                                allergiesHolder += getString(R.string.celery);
-                                allergiesText -= 512;
-                            } else if (allergiesText >= 256) {
-                                allergiesHolder += getString(R.string.nuts);
-                                allergiesText -= 256;
-                            } else if (allergiesText >= 128) {
-                                allergiesHolder += getString(R.string.lupine);
-                                allergiesText -= 128;
-                            } else if (allergiesText >= 64) {
-                                allergiesHolder += getString(R.string.fish);
-                                allergiesText -= 64;
-                            } if (allergiesText >= 32) {
-                                allergiesHolder += getString(R.string.soy);
-                                allergiesText -= 32;
-                            } else if (allergiesText >= 16) {
-                                allergiesHolder += getString(R.string.gluten_wheat);
-                                allergiesText -= 16;
-                            } else if (allergiesText >= 8) {
-                                allergiesHolder += getString(R.string.peanutt);
-                                allergiesText -= 8;
-                            } else if (allergiesText >= 4) {
-                                allergiesHolder += getString(R.string.egg);
-                                allergiesText -= 4;
-                            } else if (allergiesText >= 2) {
-                                allergiesHolder += getString(R.string.lactose_milk);
-                                allergiesText -= 2;
-                            } else if (allergiesText >= 1) {
-                                allergiesHolder += getString(R.string.shellfish);
-                                allergiesText -= 1;
-                            }
-                            allergiesHolder += "\n";
-                        }
-
-
-                        allergiesTextView.setText(allergiesHolder);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("TAG", "JSONExeption" + e);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                    Log.i("TAG", "VolleyError" + error);
-
-                    Picasso.get().load(R.drawable.placeholder).into(imageView);
-                    foodNameTextView.setText("");
-                    allergiesTextView.setText("");
-                    descriptionTextView.setText("");
-                    contentTextView.setText("No more listings");
-                }
-            });
-            requestQueue.add(jsonObjectRequest);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("TAG", "ObjectRequest" + e);
-        }
-    }
 }
 
