@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         //ratingTbl = database.getReference("Rating");
         localDB = new Database(this);
         firebaseDatabase = FirebaseDatabase.getInstance();
-        favDatabaseReference = firebaseDatabase.getReference("favorites_foods");
+        favDatabaseReference = firebaseDatabase.getReference("favorites");
 
         btnRating.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
 
     public void addToFavorites(View view) {
-        Toast.makeText(getApplicationContext(), "Favorited . . . ", Toast.LENGTH_LONG).show();
+
         if(favorited) {
             favorited = false;
         } else {
@@ -368,15 +368,14 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
 
-        String tempFoodId = "4";
+        String tempFoodId = "3";
         String tempFoodName = "Testavmatrett";
         String tempUserId = "4";
+        String id = tempFoodId + " " + tempUserId;
+        Favorites favorites = new Favorites(tempFoodId,tempFoodName, tempUserId);
+        favDatabaseReference.child(id).setValue(favorites);
 
-        Favorites favorites = new Favorites(tempFoodId.toString(),tempFoodName.toString());
-
-        favDatabaseReference.push().child(tempUserId).setValue(favorites);
-
-
+        Toast.makeText(getApplicationContext(), "Favorited . . . " + id, Toast.LENGTH_LONG).show();
 
     }
 

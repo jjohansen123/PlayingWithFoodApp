@@ -15,10 +15,13 @@ import android.widget.Button;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
@@ -32,7 +35,7 @@ public class FavoritesActivity extends AppCompatActivity{
     DatabaseReference favDatabaseReference;
     Favorites favorites;
 
-    Button btnPost;
+    Button btnRemove;
 
 
 
@@ -45,10 +48,13 @@ public class FavoritesActivity extends AppCompatActivity{
         setContentView(R.layout.activity_favorites);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        favDatabaseReference = firebaseDatabase.getReference("favorites_foods");
+        favDatabaseReference = firebaseDatabase.getReference("favorites");
 
         recyclerView = findViewById(R.id.favoritedRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        btnRemove = findViewById(R.id.removeBtn);
+
 
         favDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -65,6 +71,22 @@ public class FavoritesActivity extends AppCompatActivity{
         displayFavorites();
 
 
+    }
+
+    private void deleteFavorite(String food_id) {
+
+        FirebaseDatabase.getInstance().getReference("favorites")
+                .child(food_id).removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Delete", "Notification has been deleted");
+                        } else {
+                            Log.d("Delete", "Notification couldn't be deleted");
+                        }
+                    }
+                });
     }
 
     @Override
@@ -96,8 +118,12 @@ public class FavoritesActivity extends AppCompatActivity{
 
                         final String key= getRef(position).getKey();
 
+                        Log.i("TAG", "key " + key);
 
-                        favDatabaseReference.child(key).child("4").addValueEventListener(new ValueEventListener() {
+                        favDatabaseReference
+                                .child(key)
+                                .addValueEventListener(
+                                        new ValueEventListener() {
                             @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

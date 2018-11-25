@@ -9,19 +9,28 @@ public class Favorites {
     String food_id;
     String food_name;
     static int length;
-    int user_id;
+    String user_id;
+
+
 
     public Favorites() {
         // Default constructor required for calls to DataSnapshot.getValue(Favorites.class)
     }
 
 
-    public Favorites(String food_id, String food_name) {
+    public Favorites(String food_id, String food_name, String user_id) {
         this.food_id = food_id;
         this.food_name = food_name;
+        this.user_id = user_id;
     }
 
+    public String getUser_id() {
+        return user_id;
+    }
 
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
 
     public static int getLength() {
         return length;
@@ -47,25 +56,4 @@ public class Favorites {
         this.food_name = food_name;
     }
 
-    public static List<Favorites> getData() {
-        List<Favorites> data = new ArrayList<>();
-
-        Integer[] foodId = {2,
-        3,
-        5};
-
-        String[] foodName = {"Two",
-                "Three",
-                "Five"};
-
-        length = foodId.length;
-
-        for(int i = 0; i < foodId.length; i++) {
-            Favorites current = new Favorites();
-            current.setFood_id(String.valueOf(foodId[i]));
-            current.setFood_name(foodName[i]);
-            data.add(current);
-        }
-        return data;
-    }
 }
