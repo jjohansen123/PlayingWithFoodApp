@@ -116,12 +116,12 @@ public class FavoritesActivity extends AppCompatActivity{
                     @Override
                     protected void onBindViewHolder(@NonNull final MyRecyclerViewHolder holder, int position, @NonNull Favorites model) {
 
-                        final String key= getRef(position).getKey();
-
-                        Log.i("TAG", "key " + key);
+                        final String key1 = getRef(position).getKey();
+                        final String key2= getRef(position).getKey();
+                        Log.i("TAG", "key " + key1);
 
                         favDatabaseReference
-                                .child(key)
+                                .child(key1)
                                 .addValueEventListener(
                                         new ValueEventListener() {
                             @RequiresApi(api = Build.VERSION_CODES.N)

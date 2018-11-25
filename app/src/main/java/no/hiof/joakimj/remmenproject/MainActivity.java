@@ -400,10 +400,10 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         String tempFoodId = foodId;
         String tempFoodName = foodNameText;
         String tempUserId = "4";
-        String id = tempFoodId + " " + tempUserId;
+        String id = tempUserId;
         Favorites favorites = new Favorites(tempFoodId,tempFoodName, tempUserId);
-        favDatabaseReference.child(id).setValue(favorites);
-
+        favDatabaseReference.child(id).child(tempFoodId).setValue(favorites);
+        Log.i("banana", tempFoodId);
         Toast.makeText(getApplicationContext(), "Favorited . . . " + id, Toast.LENGTH_LONG).show();
 
     }
