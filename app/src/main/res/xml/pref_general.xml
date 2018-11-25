@@ -18,4 +18,9 @@
         android:key="@string/pref_units_key"
         android:title="@string/pref_units_label" />
 
+    <Preference
+        android:title="Set information"
+        android:key="setInfoKey"/>
+
+
 </PreferenceScreen>

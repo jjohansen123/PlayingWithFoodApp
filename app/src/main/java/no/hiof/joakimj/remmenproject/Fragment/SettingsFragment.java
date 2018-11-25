@@ -1,5 +1,6 @@
 package no.hiof.joakimj.remmenproject.Fragment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;
@@ -11,7 +12,10 @@ import android.support.v7.preference.PreferenceScreen;
 
 import android.support.v4.app.Fragment;
 
+import no.hiof.joakimj.remmenproject.MainActivity;
 import no.hiof.joakimj.remmenproject.R;
+import no.hiof.joakimj.remmenproject.RegisterUserActivity;
+import no.hiof.joakimj.remmenproject.SettingsActivity;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -47,6 +51,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 setPreferenceSummary(p, value);
             }
         }
+
+        Preference myPref = (Preference) findPreference("setInfoKey");
+        myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(getContext(), RegisterUserActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
     @Override
