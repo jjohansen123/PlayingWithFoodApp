@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     public String url = "";
     public String searchUrl = "";
     boolean firstImage = true;
+    boolean firstTimeLoggedIn = false;
     boolean favorited = false;
 
     private FirebaseAuth firebaseAuth;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     private RecyclerView commentRV;
 
     static public String userUid, nameUid;
-    private String contentText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
+    private String contentText, nameUser, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
     public String foodNameText;
     private Integer allergiesText;
     SearchView searchView = null;
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     RatingBar ratingBar;
     ArrayList<String> foodImages;
     List<Comment> commentList;
-    User user;
+    User makeUser;
 
     //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         imageView = findViewById(R.id.imageView);
         favImage = findViewById(R.id.favImage);
         foodImages = new ArrayList<String>();
-        user = new User();
+        makeUser = new User();
 
         weburl = getString(R.string.url_webpage);
         foodapi = getString(R.string.foodapi);
@@ -138,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         userUid = firebaseAuth.getUid();
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        nameUid = "Test Testeren"; //user.getDisplayName();
 
         //Local Database
         //ratingTbl = database.getReference("Rating");
@@ -172,7 +172,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
 
-                Log.i("TAGUSER", "user: " + userUid);
+                Log.i("TAG", "user: " + makeUser.getfNavn() + makeUser.geteNavn());
+
                 displayComment();
 
             }
@@ -198,8 +199,23 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
         });
 
-
+        if(!firstTimeLoggedIn) {
+            getUserData();
+        }
     }
+
+    private void startRegistrering() {
+
+        if(firstTimeLoggedIn) {
+            Intent intent = new Intent(MainActivity.this, RegisterUserActivity.class);
+            intent.putExtra("key_userUid", userUid);
+            intent.putExtra("key_username", nameUser);
+            startActivity(intent);
+        } else {
+            getUserData();
+        }
+    }
+
 
     private void displayComment() {
         String COMMENT_URL = "http://81.166.82.90/comment.php?food_id=" + (counter);
@@ -279,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser == null) {
+                    firstTimeLoggedIn = true;
                     startActivityForResult(AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
@@ -292,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
             }
         };
-        //getUserData("HEI!");
+
     }
 
     @Override
@@ -302,8 +319,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+                nameUser = user.getDisplayName();
+                userUid = user.getUid();
                 Toast.makeText(this, getString(R.string.signed_in_as) + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
+                startRegistrering();
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.sign_in_canceled, Toast.LENGTH_SHORT).show();
                 finish();
@@ -613,44 +633,47 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         }
     }
 
-    public void getUserData(String google_id) {
+    public void getUserData() {
 
-        Intent intent = new Intent(MainActivity.this, RegisterUserActivity.class);
-        intent.putExtra("userUid", userUid);
-        startActivity(intent);
+        String shiturl = "http://81.166.82.90/userapi.php?google_id=" + userUid;
+        Log.i("TAG", " " + userUid);
 
-        Log.i("TAG", "kommer jeg hit 1");
-        /*
-        url = "http://81.166.82.90/userapi.php?google_id=" + google_id;
+        final foodinfo output = new foodinfo();
+        try {
+            final JSONObject object = new JSONObject();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, shiturl, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        //opening the first object in Json
+                        JSONObject obj = response.getJSONObject("object");
+                        Log.i("TAGUSER", " " + obj.getString("fNavn"));
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject obj = new JSONObject("object");
-
-                    user.setId(Integer.valueOf(obj.getString("user_id")));
-                    user.setfNavn(obj.getString("fNavn"));
-                    user.seteNavn(obj.getString("eNavn"));
-                    user.setAllergi(Integer.valueOf(obj.getString("allergier")));
+                        makeUser.setId(Integer.valueOf(obj.getString("user_id")));
+                        makeUser.setfNavn(obj.getString("fNavn"));
+                        makeUser.seteNavn(obj.getString("eNavn"));
+                        makeUser.setAllergi(Integer.valueOf(obj.getString("allergier")));
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("TAG", "JSONExeption" + e);
+                    }
                 }
-            }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                    Log.i("TAG", "VolleyError !! " + error);
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("TAG", "error: " + error);
-            }
-        });
-
-        Volley.newRequestQueue(this).add(jsonObjectRequest);
-*/
+                }
+            });
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("TAG", "ObjectRequest" + e);
+        }
     }
-
 
 }
 

@@ -1,5 +1,6 @@
 package no.hiof.joakimj.remmenproject;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ public class RegisterUserActivity extends AppCompatActivity {
     Integer allergiValue = 0;
 
     private FirebaseAuth firebaseAuth;
-    private String firstname, surname, userUrl, fullname;
+    private String firstname, surname, userUrl, fullname, userUid;
     private EditText firstnameText, surnameText;
     private CheckBox cB1,cB2, cB3, cB4, cB5, cB6, cB7, cB8, cB9, cB10, cB11, cB12, cB13, cB14, cB15;
 
@@ -29,7 +30,11 @@ public class RegisterUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
 
-        fullname = MainActivity.nameUid;
+
+        Intent intent = getIntent();
+        userUid = intent.getStringExtra("key_userUid");
+        fullname = intent.getStringExtra("key_username");
+
         String[] parts = fullname.split("\\s+");
         Log.i("Registrer", "Fullname: " + fullname + " " + parts.length);
 
@@ -141,7 +146,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         userUrl = "http://81.166.82.90/register_user.php?allergier=" + allergiValue
                 + "&fNavn=" + firstname
                 + "&eNavn=" + surname
-                + "&google_id=" + MainActivity.userUid;
+                + "&google_id=" + userUid;
 
          new SendUserToDatabase().execute();
      }
