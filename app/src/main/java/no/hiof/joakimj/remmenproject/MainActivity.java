@@ -3,22 +3,18 @@ package no.hiof.joakimj.remmenproject;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,26 +25,24 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.gson.JsonObject;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.stepstone.apprating.AppRatingDialog;
 import com.stepstone.apprating.listener.RatingDialogListener;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -57,15 +51,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Database.Database;
-import no.hiof.joakimj.remmenproject.Fragment.CommentFragment;
+import no.hiof.joakimj.remmenproject.Holder.CommentAdapter;
 import no.hiof.joakimj.remmenproject.Modell.Comment;
-import no.hiof.joakimj.remmenproject.Modell.Helpingcode;
-import no.hiof.joakimj.remmenproject.Holder.MyRecyclerViewHolder;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
 
 import static java.lang.String.valueOf;
-import static no.hiof.joakimj.remmenproject.Fragment.CommentFragment.COMMENT_INDEX;
 
 
 public class MainActivity extends AppCompatActivity implements RatingDialogListener {
@@ -87,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     private TextView contentTextView, foodNameTextView, allergiesTextView, commentsTextView, descriptionTextView, txt_foodName, txt_foodId;
     private ImageView imageView, favImage;
+    private RecyclerView commentRV;
 
     static public String userUid, nameUid;
     private String contentText, descriptionText, allergiesHolder, foodId, weburl, uploads, foodapi, foodTempHolder, ratingUrl;
@@ -100,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     static public RequestQueue requestQueue;
     RatingBar ratingBar;
     ArrayList<String> foodImages;
+    List<Comment> commentList;
 
     //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
@@ -118,6 +111,12 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         contentTextView = (TextView) findViewById(R.id.contentTextView);
         descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
 
+        //comment recycleView
+        commentRV = findViewById(R.id.comment_recycler_view);
+        commentRV.setLayoutManager(new LinearLayoutManager(this));
+
+
+
         imageView = findViewById(R.id.imageView);
         favImage = findViewById(R.id.favImage);
         foodImages = new ArrayList<String>();
@@ -134,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         firebaseAuth = FirebaseAuth.getInstance();
         createAuthenticationListener();
         userUid = firebaseAuth.getUid();
+
         FirebaseUser user = firebaseAuth.getCurrentUser();
         nameUid = "Test Testeren"; //user.getDisplayName();
 
@@ -152,13 +152,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         requestQueue = Volley.newRequestQueue(this);
 
-        //fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        CommentFragment commentFragment = new CommentFragment();
-        fragmentManager.beginTransaction()
-                .add(R.id.comment_fragment, commentFragment, "TAG")
-                .commit();
-
 
         imageView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeBottom() {
@@ -166,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
 
             public void onSwipeLeft() {
-                CommentFragment.index++;
                 counterImg++;
                 counter++;
 
@@ -177,6 +169,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
 
+
+                displayComment();
 
             }
 
@@ -191,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 Toast.makeText(MainActivity.this, R.string.swipe_right, Toast.LENGTH_SHORT).show();
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
+
+                displayComment();
             }
 
             public void onSwipeTop() {
@@ -202,6 +198,39 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     }
 
+    private void displayComment() {
+        String COMMENT_URL = "http://81.166.82.90/comment.php?food_id=" + (counter);
+
+        commentList = new ArrayList<>();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, COMMENT_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONArray array = new JSONArray(response);
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject comment = array.getJSONObject(i);
+                        commentList.add(new Comment(
+                                comment.getString("comment"),
+                                comment.getString("fNavn"),
+                                comment.getInt("rating")
+                        ));
+                    }
+                    CommentAdapter adapter = new CommentAdapter(MainActivity.this, commentList);
+                    commentRV.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Error in Volley: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+        Volley.newRequestQueue(this).add(stringRequest);
+    }
 
 
     private void showRatingDialog() {
@@ -368,8 +397,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             favImage.setBackgroundResource(R.drawable.ic_favorite_highlighted_24dp);
         }
 
-        String tempFoodId = "3";
-        String tempFoodName = "Testavmatrett";
+        String tempFoodId = foodId;
+        String tempFoodName = foodNameText;
         String tempUserId = "4";
         String id = tempFoodId + " " + tempUserId;
         Favorites favorites = new Favorites(tempFoodId,tempFoodName, tempUserId);
@@ -412,16 +441,10 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
             return null;
         }
-/*
-        final String ratingUrl = "http://81.166.82.90/set_rating?rating=" + rating.getRateValue() +
-                "&user_id=" + rating.getUserId() +
-                "&food_id=" + rating.getFoodId() +
-                "&comments=" + rating.getComment();
-*/
+
     }
 
     //get Json
-
     public class foodinfo {
         int id;
         String foodName;
@@ -532,8 +555,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                             } else if (allergiesText >= 64) {
                                 allergiesHolder += getString(R.string.fish);
                                 allergiesText -= 64;
-                            }
-                            if (allergiesText >= 32) {
+                            } else if (allergiesText >= 32) {
                                 allergiesHolder += getString(R.string.soy);
                                 allergiesText -= 32;
                             } else if (allergiesText >= 16) {
@@ -580,153 +602,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             e.printStackTrace();
             Log.i("TAG", "ObjectRequest" + e);
         }
-/*
-        try {
-            final JSONObject object = new JSONObject();
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        //opening the first object in Json
-                        JSONObject obj = response.getJSONObject("object");
-
-                    }
-
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.i("TAG", "JSONExeption" + e);
-                }
-            }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
-                        Log.i("TAG", "VolleyError" + error);
-
-                        Picasso.get().load(R.drawable.placeholder).into(imageView);
-                        foodNameTextView.setText("");
-                        allergiesTextView.setText("");
-                        descriptionTextView.setText("");
-                        contentTextView.setText("No more listings");
-                    }
-                });
-            requestQueue.add(jsonObjectRequest);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.i("TAG", "ObjectRequest" + e);
-            }
-
-*/
     }
-
-    public interface GetDataEventListener {
-        void dataLoaded(List<Comment> commentList);
-    }
-
-
-    static public String url2 = "http://81.166.82.90/comment.php?food_id=";
-    static public JSONObject tempobject;
-    static public List<Comment> tempcomment = new ArrayList<>();
-
-    /*
-    static public List<Comment> getJsonData() {
-        try {
-            Log.i("reeeeee7", "her blir starter JSON data");
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
-
-
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        Log.i("reeeeee3", "her starter json kall");
-                        //opening the first object in Json
-                        JSONObject obj = response.getJSONObject("object");
-                        tempobject = obj;
-                        Log.i("reeeeee4", "her testes JSON output: " + tempobject.getString("comment"));
-                        Log.i("asd", "her testes JSON output: " + tempobject.getString("fNavn"));
-                        Log.i("asd", "her testes JSON output: " + tempobject.getString("rating"));
-                        Comment comment = new Comment();
-                        comment.setComment(tempobject.getString("comment"));
-                        comment.setfName(tempobject.getString("fNavn"));
-                        comment.setRating(tempobject.getInt("rating"));
-                        Log.i("reeeeee17", "her legges det til tempcomment");
-                        tempcomment.add(comment);
-                        Log.i("reeeeee18", "her er vi etter det blir lagt til tempcomment" + tempobject.getString("comment"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("reeeeee14", "JSONExeption" + e.toString());
-                    } catch (Exception e)
-                    {
-                        Log.i("reeeeee15", "ObjectRequest" + e.toString());
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.i("reeeeee5", "JSONExeption" + error);
-                }
-            });
-            requestQueue.add(jsonObjectRequest);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("reeeeee5", "ObjectRequest" + e);
-        }
-        Log.i("reeeeee16", "her returneres JSON stuff i comment form " + tempcomment.get(0).comment);
-        return tempcomment;
-    }
-*/
-
-    static public List<Comment> getJsonData(final GetDataEventListener getDataEventListener) {
-        try {
-            Log.i("reeeeee7", "her blir starter JSON data");
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2 + counter, null, new Response.Listener<JSONObject>() {
-
-
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        Log.i("reeeeee3", "her starter json kall");
-                        //opening the first object in Json
-                        JSONObject obj = response.getJSONObject("object");
-                        JSONObject tempobject = obj;
-                        Log.i("reeeeee4", "her testes JSON output: " + tempobject.getString("comment"));
-                        Log.i("asd", "her testes JSON output: " + tempobject.getString("fNavn"));
-                        Log.i("asd", "her testes JSON output: " + tempobject.getString("rating"));
-                        Comment comment = new Comment();
-                        comment.setComment(tempobject.getString("comment"));
-                        comment.setfName(tempobject.getString("fNavn"));
-                        comment.setRating(tempobject.getInt("rating"));
-                        tempcomment.add(comment);
-
-                        getDataEventListener.dataLoaded(tempcomment);
-
-                        Log.i("reeeeee18", "her er vi etter det blir lagt til tempcomment" + tempobject.getString("comment"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("reeeeee14", "JSONExeption" + e.toString());
-                    } catch (Exception e)
-                    {
-                        Log.i("reeeeee15", "ObjectRequest" + e.toString());
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.i("reeeeee5", "JSONExeption" + error);
-                }
-            });
-            requestQueue.add(jsonObjectRequest);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("reeeeee5", "ObjectRequest" + e);
-        }
-        Log.i("reeeeee16", "her returneres JSON stuff i comment form " + tempcomment.get(0).comment);
-        return tempcomment;
-    }
-
 }
 

@@ -1,6 +1,5 @@
 package no.hiof.joakimj.remmenproject.Adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import no.hiof.joakimj.remmenproject.Fragment.CommentFragment;
 import no.hiof.joakimj.remmenproject.Modell.Comment;
 import no.hiof.joakimj.remmenproject.R;
 

@@ -21,7 +21,15 @@ public class Comment {
     public String fName;
     public int rating;
 
+    public Comment() {
+        // Default constructor required for calls
+    }
 
+    public Comment(String comment, String fName, int rating) {
+        this.comment = comment;
+        this.fName = fName;
+        this.rating = rating;
+    }
 
     public String getComment() {
         return comment;

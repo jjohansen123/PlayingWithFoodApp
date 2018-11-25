@@ -11,7 +11,7 @@
     <item
         android:id="@+id/favorites_item"
         android:title="Favorites"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_favorite_grey_24dp"
         app:showAsAction="always" />
 
     <item

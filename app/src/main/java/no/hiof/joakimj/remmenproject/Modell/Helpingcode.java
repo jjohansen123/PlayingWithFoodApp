@@ -1,23 +1,12 @@
 package no.hiof.joakimj.remmenproject.Modell;
 
-import android.text.Layout;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import no.hiof.joakimj.remmenproject.Fragment.CommentFragment;
-import no.hiof.joakimj.remmenproject.MainActivity;
-import no.hiof.joakimj.remmenproject.Modell.Comment;
 public class Helpingcode {
    static public RequestQueue requestQueue;
    static public Comment temp = new Comment();

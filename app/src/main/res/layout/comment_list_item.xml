@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/movie_poster"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:minWidth="0pt"
-    android:scaleType="fitCenter"
-    android:adjustViewBounds="true" />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/top_of_comment">
+        <TextView
+            android:id="@+id/comment_first_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:text="firstname"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+
+        <RatingBar
+            android:id="@+id/rtb_comment_rating"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="11dp"
+            android:foregroundGravity="center"
+            android:isIndicator="true"
+            android:max="5"
+            android:rating="0.0" />
+
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/comment_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comment"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        android:layout_below="@id/top_of_comment"/>
+
+
+</RelativeLayout>
