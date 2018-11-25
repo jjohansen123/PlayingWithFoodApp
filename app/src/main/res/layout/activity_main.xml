@@ -26,16 +26,7 @@
 
             app:srcCompat="@android:drawable/sym_def_app_icon" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_ratingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|start"
-            android:backgroundTint="@android:color/white"
-            android:src="@drawable/ic_star_black_24dp"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            app:useCompatPadding="true" />
+
         <LinearLayout
             android:weightSum="10"
             android:orientation="horizontal"
@@ -187,4 +178,17 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_star_black_24dp"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp"
+        app:useCompatPadding="true" />
 </android.support.constraint.ConstraintLayout>

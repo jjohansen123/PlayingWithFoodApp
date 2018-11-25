@@ -55,6 +55,7 @@ import no.hiof.joakimj.remmenproject.Holder.CommentAdapter;
 import no.hiof.joakimj.remmenproject.Modell.Comment;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
+import no.hiof.joakimj.remmenproject.Modell.User;
 
 import static java.lang.String.valueOf;
 
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     RatingBar ratingBar;
     ArrayList<String> foodImages;
     List<Comment> commentList;
+    User user;
 
     //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         imageView = findViewById(R.id.imageView);
         favImage = findViewById(R.id.favImage);
         foodImages = new ArrayList<String>();
+        user = new User();
 
         weburl = getString(R.string.url_webpage);
         foodapi = getString(R.string.foodapi);
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 Picasso.get().load(DATA_URL).fit().into(imageView);
                 getData();
 
-
+                Log.i("TAGUSER", "user: " + userUid);
                 displayComment();
 
             }
@@ -284,9 +287,28 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                                                     new AuthUI.IdpConfig.GoogleBuilder().build()))
                                     .build(),
                             RC_SIGN_IN);
+
                 }
+
             }
         };
+        //getUserData("HEI!");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                Toast.makeText(this, getString(R.string.signed_in_as) + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, R.string.sign_in_canceled, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
     }
 
     //menu
@@ -337,20 +359,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                Toast.makeText(this, getString(R.string.signed_in_as) + user.getDisplayName(), Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, R.string.sign_in_canceled, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-    }
 
     @Override
     public void onNegativeButtonClicked() {
@@ -603,5 +612,45 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             Log.i("TAG", "ObjectRequest" + e);
         }
     }
+
+    public void getUserData(String google_id) {
+
+        Intent intent = new Intent(MainActivity.this, RegisterUserActivity.class);
+        intent.putExtra("userUid", userUid);
+        startActivity(intent);
+
+        Log.i("TAG", "kommer jeg hit 1");
+        /*
+        url = "http://81.166.82.90/userapi.php?google_id=" + google_id;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONObject obj = new JSONObject("object");
+
+                    user.setId(Integer.valueOf(obj.getString("user_id")));
+                    user.setfNavn(obj.getString("fNavn"));
+                    user.seteNavn(obj.getString("eNavn"));
+                    user.setAllergi(Integer.valueOf(obj.getString("allergier")));
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("TAG", "error: " + error);
+            }
+        });
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+*/
+    }
+
+
 }
 
