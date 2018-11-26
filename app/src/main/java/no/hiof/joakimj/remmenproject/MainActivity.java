@@ -406,6 +406,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         if(!(SearchAdapter.tester == null)) {
            getSearchData(SearchAdapter.tester);
            Picasso.get().load("http://81.166.82.90/uploads/"+SearchAdapter.tester+".jpg").fit().into(imageView);
+           counter = Integer.parseInt(SearchAdapter.tester);
+           counterImg = Integer.parseInt(SearchAdapter.tester);
+
         }
     }
 
