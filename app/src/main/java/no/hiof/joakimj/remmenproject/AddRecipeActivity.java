@@ -35,13 +35,7 @@ import static java.lang.String.valueOf;
 public class AddRecipeActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String UPLOAD_URL = "http://81.166.82.90/imageuploader.php";
-
     public static final String UPLOAD_KEY_IMAGE = "image";
-    public static final String UPLOAD_KEY_FOODNAME = "foodname";
-    public static final String UPLOAD_KEY_ALLERGIER = "allergier";
-    public static final String UPLOAD_KEY_USER_ID = "user_id";
-    public static final String UPLOAD_KEY_COMMENT = "comment";
-    public static final String UPLOAD_KEY_DESCRIPTION = "description";
 
     private int PICK_IMAGE_REQUEST = 1;
 
@@ -54,23 +48,19 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     private ImageView imageView;
     private Bitmap bitmap;
     private Uri filePath;
-
     User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
-
         user = MainActivity.makeUser;
         btnChooseImage = findViewById(R.id.buttonChoose);
         btnUploadRecipe = findViewById(R.id.buttonUpload);
         btnViewImage = findViewById(R.id.buttonViewImage);
-
         nameEditText = findViewById(R.id.name_edit_text);
         commentEditText = findViewById(R.id.comment_edit_text);
         descriptionEditText = findViewById(R.id.description_edit_text);
-
         imageView = findViewById(R.id.imageView);
 
         cB1 = findViewById(R.id.checkBox1);
@@ -155,7 +145,6 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         if(cB15.isChecked()) {
             allergiValue += 16384;
         }
-
         return allergiValue;
     }
 
@@ -165,24 +154,16 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             showFileChooser(); 
         }
         if(v == btnUploadRecipe) {
-
-            Log.i("tag", "urlasdasd " + user.getId());
             allergiValue = getAllergies();
-
             UPLOAD_URL_RECIPE = "http://81.166.82.90/fooduploader.php?foodName=" + nameEditText.getText().toString()
                     + "&user_id=" + valueOf(user.getId())
                     + "&allergier=" + allergiValue.toString()
                     + "&comment=" + commentEditText.getText().toString()
                     + "&description=" + descriptionEditText.getText().toString();
-
-            Log.i("tag", "url" + UPLOAD_URL_RECIPE);
             new SendRecipe().execute();
-
             uploadImage();
         }
     }
-
-
 
     private void showFileChooser() {
         Intent intent = new Intent();
@@ -194,11 +175,9 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             filePath = data.getData();
-
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imageView.setImageBitmap(bitmap);
@@ -213,7 +192,6 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
         return encodedImage;
     }
 
@@ -222,25 +200,18 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
             ProgressDialog loading;
             RequestHandler rh = new RequestHandler();
 
-
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 loading = ProgressDialog.show(AddRecipeActivity.this, "Upload Recipe", "Please wait . . . ", true, true);
             }
-
             @Override
             protected String doInBackground(Bitmap... params) {
                 Bitmap bitmap = params[0];
                 String uploadImage = getStringImage(bitmap);
-                Log.i("TAG", "Bøkde:"+uploadImage);
                 HashMap<String,String> data = new HashMap<>();
-
                 data.put(UPLOAD_KEY_IMAGE, uploadImage);
-
                 String result = rh.sendPostRequest(UPLOAD_URL,data);
-
                 return result;
             }
 
@@ -258,25 +229,11 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 } else {
                     Toast.makeText(getApplicationContext(), "Noe gikk galt", Toast.LENGTH_SHORT);
                 }
-
-
             }
-
         }
-
         UploadImage ui = new UploadImage();
         ui.execute(bitmap);
-
-
     }
-
-
-    public void submitResult() {
-
-
-        //uploadImage();
-    }
-
 
     public class SendRecipe extends AsyncTask<String, String, String> {
         @Override
@@ -286,19 +243,13 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("GET");
                 httpURLConnection.connect();
-
                 BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-
                 String value = reader.readLine();
-                Log.i("TAG", "Result is: " + value);
-
             } catch (Exception e){
                 Log.i("TAG", "Something went wrong in sendRating: " + e);
             }
             return null;
-
         }
-
     }
 
 
