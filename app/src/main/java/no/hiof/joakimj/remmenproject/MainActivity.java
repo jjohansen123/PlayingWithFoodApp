@@ -64,11 +64,12 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     private static final int RC_SIGN_IN = 1;
     int currentFoodIndex = 0;
-    public static int counterImg = 0;
-    public static int counter = 0;
+    public static int counterImg = 1;
+    public static int counter = 1;
     public String DATA_URL = "";
     public String url = "";
     public String searchUrl = "";
+    public int max_food;
     boolean firstImage = true;
     boolean firstTimeLoggedIn = false;
     boolean favorited = false;
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-
+        maxfoods();
         firebaseDatabase = FirebaseDatabase.getInstance();
         favDatabaseReference = firebaseDatabase.getReference("favorites");
 
@@ -170,6 +171,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
 
             public void onSwipeLeft() {
+                if(counter == max_food)
+                {
+                    counterImg = 0;
+                    counter = 0;
+                }
                 counterImg++;
                 counter++;
 
@@ -187,9 +193,15 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             }
 
             public void onSwipeRight() {
+
                 counterImg--;
                 counter--;
 
+                if(counter == 0)
+                {
+                    counter = max_food;
+                    counterImg = max_food;
+                }
 
                 DATA_URL = weburl + uploads + counterImg + getString(R.string.jpg);
                 url = weburl + foodapi + counter;
@@ -211,6 +223,35 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
             getUserData();
         }
     }
+
+    private void maxfoods() {
+        String maxfoodurl = "http://81.166.82.90/maxfood.php";
+
+        commentList = new ArrayList<>();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, maxfoodurl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    max_food = Integer.valueOf(obj.getString("total"));
+                    Log.i("kake4 ", String.valueOf(max_food));
+                }
+
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Error in Volley: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+        Volley.newRequestQueue(this).add(stringRequest);
+    }
+
 
     private void getSearchData(String addingValue) {
 
