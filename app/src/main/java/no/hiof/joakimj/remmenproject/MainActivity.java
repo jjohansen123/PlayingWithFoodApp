@@ -1,5 +1,6 @@
 package no.hiof.joakimj.remmenproject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Database.Database;
 import no.hiof.joakimj.remmenproject.Holder.CommentAdapter;
+import no.hiof.joakimj.remmenproject.Holder.SearchAdapter;
 import no.hiof.joakimj.remmenproject.Modell.Comment;
 import no.hiof.joakimj.remmenproject.Modell.Favorites;
 import no.hiof.joakimj.remmenproject.Modell.Rating;
@@ -108,6 +110,16 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        String temp = "";
+
+
+
+        /*if(food_id < 0) {
+            getSearchData(food_id);
+            Picasso.get().load("http://81.166.82.90/uploads/" + food_id).fit().into(imageView);
+        }*/
+
         //layout Views
         foodNameTextView = (TextView) findViewById(R.id.foodNameTextView);
         allergiesTextView = (TextView) findViewById(R.id.allergiesTextView);
@@ -124,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         favImage = findViewById(R.id.favImage);
         foodImages = new ArrayList<String>();
         makeUser = new User();
+
 
         weburl = getString(R.string.url_webpage);
         foodapi = getString(R.string.foodapi);
@@ -204,6 +217,116 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         }
     }
 
+    private void getSearchData(String addingValue) {
+
+        String searching_url = "http://81.166.82.90/foodapi.php?food_id=" + addingValue;
+        try {
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, searching_url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            //opening the first object in Json
+                            JSONObject obj = response.getJSONObject("object");
+
+                            //adding whats in fNavn to a string
+                            foodNameText = (obj.getString("foodName"));
+                            contentText = (obj.getString("comments"));
+                            descriptionText = (obj.getString("description"));
+                            allergiesText = (obj.getInt("allergier"));
+
+                            try {
+                                ratingNumber = BigDecimal.valueOf(obj.getDouble("rating")).floatValue();
+                                Log.i("Rating", "rating: " + (obj.getString("rating")));
+                            } catch (JSONException e) {
+                                ratingNumber = 0.0f;
+                                Log.i("Rating", "Rating didnt fetch, no rating: " + e);
+                            }
+
+
+                            //adding string into TextView
+                            foodNameTextView.setText(foodNameText);
+                            descriptionTextView.setText(descriptionText);
+                            contentTextView.setText(getString(R.string.comment) + "\n" + contentText);
+                            ratingBar.setRating(ratingNumber);
+                            allergiesHolder = "";
+
+                            foodId = "\"" + counter + "\"";
+
+                            while (allergiesText > 0) {
+                                if (allergiesText >= 8192) {
+                                    allergiesHolder += getString(R.string.meat_mammal);
+                                    allergiesText -= 8192;
+                                } else if (allergiesText >= 4096) {
+                                    allergiesHolder += getString(R.string.sulfur);
+                                    allergiesText -= 4096;
+                                } else if (allergiesText >= 2048) {
+                                    allergiesHolder += getString(R.string.molluscs);
+                                    allergiesText -= 2048;
+                                } else if (allergiesText >= 1024) {
+                                    allergiesHolder += getString(R.string.mustard);
+                                    allergiesText -= 1024;
+                                } else if (allergiesText >= 512) {
+                                    allergiesHolder += getString(R.string.celery);
+                                    allergiesText -= 512;
+                                } else if (allergiesText >= 256) {
+                                    allergiesHolder += getString(R.string.nuts);
+                                    allergiesText -= 256;
+                                } else if (allergiesText >= 128) {
+                                    allergiesHolder += getString(R.string.lupine);
+                                    allergiesText -= 128;
+                                } else if (allergiesText >= 64) {
+                                    allergiesHolder += getString(R.string.fish);
+                                    allergiesText -= 64;
+                                } else if (allergiesText >= 32) {
+                                    allergiesHolder += getString(R.string.soy);
+                                    allergiesText -= 32;
+                                } else if (allergiesText >= 16) {
+                                    allergiesHolder += getString(R.string.gluten_wheat);
+                                    allergiesText -= 16;
+                                } else if (allergiesText >= 8) {
+                                    allergiesHolder += getString(R.string.peanutt);
+                                    allergiesText -= 8;
+                                } else if (allergiesText >= 4) {
+                                    allergiesHolder += getString(R.string.egg);
+                                    allergiesText -= 4;
+                                } else if (allergiesText >= 2) {
+                                    allergiesHolder += getString(R.string.lactose_milk);
+                                    allergiesText -= 2;
+                                } else if (allergiesText >= 1) {
+                                    allergiesHolder += getString(R.string.shellfish);
+                                    allergiesText -= 1;
+                                }
+                                allergiesHolder += "\n";
+                            }
+
+                            allergiesTextView.setText(allergiesHolder);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.i("TAG", "JSONExeption" + e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        Log.i("TAG", "VolleyError" + error);
+
+                        Picasso.get().load(R.drawable.placeholder).into(imageView);
+                        foodNameTextView.setText("");
+                        allergiesTextView.setText("");
+                        descriptionTextView.setText("");
+                        contentTextView.setText("No more listings");
+                    }
+                });
+                requestQueue.add(jsonObjectRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("TAG", "ObjectRequest" + e);
+            }
+    }
+
     private void startRegistrering() {
 
         if(firstTimeLoggedIn) {
@@ -279,6 +402,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
         if (firebaseAuthStateListener != null) {
             firebaseAuth.addAuthStateListener(firebaseAuthStateListener);
         }
+
+        if(!(SearchAdapter.tester == null)) {
+           getSearchData(SearchAdapter.tester);
+           Picasso.get().load("http://81.166.82.90/uploads/"+SearchAdapter.tester+".jpg").fit().into(imageView);
+        }
     }
 
     @Override
@@ -329,6 +457,8 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
                 finish();
             }
         }
+
+
     }
 
     //menu

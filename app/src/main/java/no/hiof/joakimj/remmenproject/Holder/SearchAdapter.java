@@ -1,8 +1,11 @@
 package no.hiof.joakimj.remmenproject.Holder;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import no.hiof.joakimj.remmenproject.MainActivity;
 import no.hiof.joakimj.remmenproject.Modell.Food;
 import no.hiof.joakimj.remmenproject.R;
 import no.hiof.joakimj.remmenproject.SearchActivity;
@@ -20,6 +24,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     private Context context;
     private List<Food> foodList;
     private ItemClickListener clickListener;
+
+    public static String tester;
 
     Food food;
 
@@ -60,6 +66,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     class SearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView foodNameTextView, foodIdTextView, allergiesTextView;
+
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
             foodIdTextView = itemView.findViewById(R.id.search_food_id_TV);
@@ -72,6 +79,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         @Override
         public void onClick(View v) {
             //clickListener.onClick(v,getPosition());
+            Toast.makeText(context, "klikking=!" + getAdapterPosition() + " " + food.getFood_name(), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(v.getContext(), MainActivity.class);
+            intent.putExtra("food_id", food.getFood_id());
+            tester = food.getFood_id();
+            ((Activity)context).setResult(Activity.RESULT_OK, intent);
+            ((Activity) context).finish();
+
             if(clickListener != null) clickListener.onClick(v, getAdapterPosition());
         }
     }
