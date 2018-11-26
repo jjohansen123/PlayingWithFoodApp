@@ -105,6 +105,5 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.I
     public void onClick(View view, int position) {
         // The onClick implementation of the RecyclerView item click
         final Food food = foodList.get(position);
-        Toast.makeText(this, "test " + food.getFood_id(), Toast.LENGTH_SHORT).show();
     }
 }
