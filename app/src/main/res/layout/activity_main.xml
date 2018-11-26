@@ -90,7 +90,7 @@
                     android:layout_marginTop="12dp"
                     android:lineSpacingMultiplier="1.5"
                     android:padding="12dp"
-                    android:text="Food name"
+                    android:text="@string/food_name"
                     android:textColor="@android:color/black"
                     android:textSize="20sp" />
 
@@ -102,7 +102,7 @@
                     android:layout_marginTop="12dp"
                     android:lineSpacingMultiplier="1.5"
                     android:padding="12dp"
-                    android:text="Allergies"
+                    android:text="@string/allergies"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
@@ -138,7 +138,7 @@
                         android:layout_marginTop="12dp"
                         android:lineSpacingMultiplier="1.5"
                         android:padding="12dp"
-                        android:text="Comment"
+                        android:text="@string/comment"
                         android:textColor="@android:color/black"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -163,7 +163,7 @@
                     android:layout_marginTop="12dp"
                     android:lineSpacingMultiplier="1.5"
                     android:padding="12dp"
-                    android:text="Description"
+                    android:text="@string/description"
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
 
@@ -174,7 +174,7 @@
                 android:id="@+id/comment_recycler_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"></android.support.v7.widget.RecyclerView>>
+                android:paddingBottom="20dp"/>>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -33,11 +33,8 @@ public class FavoritesActivity extends AppCompatActivity{
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference favDatabaseReference;
-    Favorites favorites;
 
     Button btnRemove;
-
-
 
     FirebaseRecyclerOptions<Favorites> options;
     FirebaseRecyclerAdapter<Favorites,MyRecyclerViewHolder> adapter;
@@ -109,7 +106,6 @@ public class FavoritesActivity extends AppCompatActivity{
                     @Override
                     public MyRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
                         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.favorites_list_item, viewGroup, false);
-                        Log.i("Tag test", "er det noe som skjer?");
                         return new MyRecyclerViewHolder(itemView);
                     }
 
@@ -118,7 +114,6 @@ public class FavoritesActivity extends AppCompatActivity{
 
                         final String key1 = getRef(position).getKey();
                         final String key2= getRef(position).getKey();
-                        Log.i("TAG", "key " + key1);
 
                         favDatabaseReference
                                 .child(key1)
@@ -128,10 +123,7 @@ public class FavoritesActivity extends AppCompatActivity{
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
-
                                     Favorites favorites = dataSnapshot.getValue(Favorites.class);
-                                    Log.i("tag", "dataSnapshot " + favorites.getFood_id());
-
                                     holder.food_id_textView.setText(favorites.getFood_id());
                                     holder.food_name_textView.setText(favorites.getFood_name());
 

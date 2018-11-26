@@ -16,7 +16,7 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="First Name"
+        android:text="@string/firstname"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,7 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Surname"
+        android:text="@string/surname"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
@@ -66,21 +66,21 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox2"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox3"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
         </LinearLayout>
 
         <LinearLayout
@@ -101,21 +101,21 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox5"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox6"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
         </LinearLayout>
 
         <LinearLayout
@@ -136,21 +136,21 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox8"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox9"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
         </LinearLayout>
 
         <LinearLayout
@@ -171,21 +171,21 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox11"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox12"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
         </LinearLayout>
 
         <LinearLayout
@@ -205,21 +205,21 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox14"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
 
             <CheckBox
                 android:id="@+id/checkBox15"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CheckBox" />
+                android:text="@string/checkbox" />
         </LinearLayout>
     </LinearLayout>
     <Button
@@ -231,7 +231,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:onClick="submitResult"
-        android:text="Submit"
+        android:text="@string/submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -10,7 +10,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Chose Picture"
+        android:text="@string/chose_picture"
         android:id="@+id/buttonChoose" />
 
     <ImageView
@@ -23,7 +23,7 @@
         android:id="@+id/name_edit_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Name on the dish"/>
+        android:text="@string/name_on_the_dish"/>
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
@@ -41,21 +41,21 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox2"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox3"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
     </LinearLayout>
 
     <LinearLayout
@@ -76,21 +76,21 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox5"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox6"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,21 +111,21 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox8"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox9"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
     </LinearLayout>
 
     <LinearLayout
@@ -146,21 +146,21 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox11"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox12"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
     </LinearLayout>
 
     <LinearLayout
@@ -180,45 +180,45 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox14"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
 
         <CheckBox
             android:id="@+id/checkBox15"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="CheckBox" />
+            android:text="@string/checkbox" />
     </LinearLayout>
     <EditText
         android:id="@+id/comment_edit_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Comment on food"/>
+        android:text="@string/recipe"/>
 
     <EditText
         android:id="@+id/description_edit_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Description on what to do"/>
+        android:text="@string/comment_on_food"/>
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Upload Recipe"
+        android:text="@string/upload_recipe"
         android:id="@+id/buttonUpload" />
 
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="View Image"
+        android:text="@string/view_image"
         android:id="@+id/buttonViewImage" />
 
 </LinearLayout>

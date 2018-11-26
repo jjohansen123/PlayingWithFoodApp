@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_centerVertical="true"
-        android:text="10" />
+        android:text="@string/food_id" />
 
     <TextView
         android:id="@+id/holder"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_centerVertical="true"
-        android:text=":  " />
+        android:text="@string/semicolon" />
 
     <TextView
         android:id="@+id/foodNameTextViewFav"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="Name Of Food" />
+        android:text="@string/name_of_food" />
 
 
     <Button
@@ -39,5 +39,5 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="8dp"
-        android:text="Remove" />
+        android:text="@string/remove" />
 </RelativeLayout>

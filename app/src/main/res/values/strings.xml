@@ -1,54 +1,23 @@
 <resources>
     <string name="app_name">RemmenProject</string>
-
+    <!--          -->
     <!-- Facebook -->
+    <!--          -->
     <string name="facebook_app_id">1951216518302142</string>
     <string name="fb_login_protocol_scheme">fb1951216518302142</string>
 
-    <!-- - - - - - - - - - - -->
-    <!--Used by Preferences  -->
-    <!-- - - - - - - - - - - -->
 
-    <!-- Label for the location preference [CHAR LIMIT=30] -->
-    <string name="pref_location_label">Location</string>
-
-    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_location_key" translatable="false">location</string>
-
-    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
-    <string name="pref_location_default" translatable="false">Mountain View, CA 94043</string>
-
-    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
-    <string name="pref_units_label">Temperature Units</string>
-
-    <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_units_label_metric">Metric</string>
-
-    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_units_label_imperial">Imperial</string>
-
-    <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
-    <string name="pref_units_key" translatable="false">units</string>
-
-    <!-- Value in SharedPreferences for metric temperature unit option [CHAR LIMIT=NONE] -->
-    <string name="pref_units_metric" translatable="false">metric</string>
-
-    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
-    <string name="pref_units_imperial" translatable="false">imperial</string>
-
+    <!--                         -->
+    <!-- Strings from preference -->
+    <!--                         -->
+    <string name="upload_new_recipe">Last opp ny oppskrift</string>
+    <string name="set_information">Sett brukerinformasjon</string>
+    <!--                   -->
     <!-- Strings from main -->
+    <!--                   -->
+
     <string name="sign_in_canceled">Login er avbrutt</string>
     <string name="signed_in_as">Logget inn som</string>
-    <string name="please_write_your_comment_here">Venligst skriv din kommentar her...</string>
-    <string name="please_select_some_stars_and_give_feedback">Venligst velg noen stjerner og gi din tilbakemelding</string>
-    <string name="rate_this_food">Gi tilbakemelding på maten</string>
-    <string name="very_bad">Veldig dårlig</string>
-    <string name="not_good">Ikke godt</string>
-    <string name="quite_ok">Helt OK</string>
-    <string name="good">Bra</string>
-    <string name="really_good">Veldig bra</string>
-    <string name="submit">Send inn</string>
-    <string name="cancel">Avbryt</string>
     <string name="swipe_right">Sveip høyre</string>
     <string name="url_webpage">http://81.166.82.90/</string>
     <string name="uploads">uploads/</string>
@@ -58,25 +27,71 @@
     <string name="swipe_top">Svipe top</string>
     <string name="swipe_bottom">Svipe bunn</string>
     <string name="thank_you_for_evaluating_the_food">Takk for at du vurderer maten.</string>
-    <string name="shellfish">Skalldyr</string>
-    <string name="lactose_milk">Laktose/melk</string>
-    <string name="egg">Egg</string>
-    <string name="peanutt">Peanøtter</string>
-    <string name="gluten_wheat">Gluten/hvete</string>
-    <string name="soy">Soya</string>
-    <string name="fish">Fisk</string>
-    <string name="lupine">Lupin</string>
-    <string name="none">Ingen</string>
-    <string name="comment">Kommentar:</string>
-    <string name="meat_mammal">Kjøtt Pattedyr</string>
-    <string name="sulfur">Svoveldioksid</string>
-    <string name="nuts">Nøtter</string>
-    <string name="celery">Selleri</string>
-    <string name="mustard">Sennep</string>
-    <string name="molluscs">Bløtdyr</string>
+        <!--           -->
+        <!-- allergier -->
+        <!--           -->
+        <string name="shellfish">Skalldyr</string>
+        <string name="lactose_milk">Laktose/melk</string>
+        <string name="egg">Egg</string>
+        <string name="peanutt">Peanøtter</string>
+        <string name="gluten_wheat">Gluten/hvete</string>
+        <string name="soy">Soya</string>
+        <string name="fish">Fisk</string>
+        <string name="lupine">Lupin</string>
+        <string name="none">Ingen</string>
+        <string name="comment">Kommentar:</string>
+        <string name="meat_mammal">Kjøtt Pattedyr</string>
+        <string name="sulfur">Svoveldioksid</string>
+        <string name="nuts">Nøtter</string>
+        <string name="celery">Selleri</string>
+        <string name="mustard">Sennep</string>
+        <string name="molluscs">Bløtdyr</string>
+        <!--        -->
+        <!-- rating -->
+        <!--        -->
+        <string name="please_write_your_comment_here">Venligst skriv din kommentar her...</string>
+        <string name="please_select_some_stars_and_give_feedback">Venligst velg noen stjerner og gi din tilbakemelding</string>
+        <string name="rate_this_food">Gi tilbakemelding på maten</string>
+        <string name="very_bad">Veldig dårlig</string>
+        <string name="not_good">Ikke godt</string>
+        <string name="quite_ok">Helt OK</string>
+        <string name="good">Bra</string>
+        <string name="really_good">Veldig bra</string>
+        <string name="submit">Send inn</string>
+        <string name="cancel">Avbryt</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--            -->
+    <!-- searchable -->
+    <!--            -->
+    <string name="hint_search">Søk...</string>
+    <!--      -->
+    <!-- meny -->
+    <!--      -->
+    <string name="settings">Innstillinger</string>
+    <string name="sign_out">Logg ut</string>
+    <!--      -->
+    <!--Layout-->
+    <!--      -->
+    <string name="favorites">favoritter</string>
+    <string name="search">Søk</string>
+    <string name="food_id">food id</string>
+    <string name="semicolon">:</string>
+    <string name="name_of_food">matrett</string>
+    <string name="allergies">Allergies</string>
+    <string name="remove">Fjern</string>
+    <string name="firstname">Fornavn</string>
+    <string name="firstname">Fornavn</string>
+    <string name="surname">Etternavn</string>
+    <string name="checkbox">CheckBox</string>
+    <string name="food_name">Matrett</string>
+    <string name="description">Beskrivelse</string>
+    <string name="chose_picture">Velg bilde</string>
+    <string name="name_on_the_dish">Navn på matretten</string>
+    <string name="comment_on_food">Beskriv fremgangsmåte</string>
+    <string name="recipe">Oppskrift</string>
+    <string name="upload_recipe">Last opp oppskrift</string>
+    <string name="view_image">Se bilde</string>
+    <string name="enter_surname">Skriv inn etternavn</string>
 
 
 </resources>

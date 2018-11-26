@@ -15,8 +15,6 @@ public class Food {
         this.allergies = allergies;
     }
 
-
-
     public String getFood_id() {
         return food_id;
     }

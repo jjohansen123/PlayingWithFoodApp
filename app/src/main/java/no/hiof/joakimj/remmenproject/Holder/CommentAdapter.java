@@ -40,18 +40,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder commentViewHolder, int i) {
         Comment comment = commentList.get(i);
-
         commentViewHolder.firstname_text_view.setText(comment.getfName());
         commentViewHolder.comment_text_view.setText(comment.getComment());
         commentViewHolder.rtb_comment.setRating(comment.getRating());
-        Log.i("TAG", "test... " + comment.getComment());
     }
 
     @Override
     public int getItemCount() {
         return commentList.size();
     }
-
 
     class CommentViewHolder extends RecyclerView.ViewHolder{
 

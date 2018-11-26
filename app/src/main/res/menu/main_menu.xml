@@ -7,21 +7,21 @@
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:title="Search"/>
+        android:title="@string/search"/>
     <item
         android:id="@+id/favorites_item"
-        android:title="Favorites"
+        android:title="@string/favorites"
         android:icon="@drawable/ic_favorite_grey_24dp"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/sign_out_item"
-        android:title="Sign Out"
+        android:title="@string/sign_out"
         app:showAsAction="never" />
     <item
         android:id="@+id/settings_item"
         android:orderInCategory="100"
-        android:title="Settings"
+        android:title="@string/settings"
         app:showAsAction="never" />
 
 

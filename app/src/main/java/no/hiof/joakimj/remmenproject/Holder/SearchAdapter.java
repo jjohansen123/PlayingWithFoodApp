@@ -78,9 +78,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
         @Override
         public void onClick(View v) {
-            //clickListener.onClick(v,getPosition());
-            Toast.makeText(context, "klikking=!" + getAdapterPosition() + " " + food.getFood_name(), Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent(v.getContext(), MainActivity.class);
             intent.putExtra("food_id", food.getFood_id());
             tester = food.getFood_id();

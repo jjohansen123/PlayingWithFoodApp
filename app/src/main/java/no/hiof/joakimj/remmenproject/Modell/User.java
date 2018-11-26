@@ -1,31 +1,5 @@
 package no.hiof.joakimj.remmenproject.Modell;
 
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import no.hiof.joakimj.remmenproject.Holder.SearchAdapter;
-import no.hiof.joakimj.remmenproject.MainActivity;
-import no.hiof.joakimj.remmenproject.SearchActivity;
 
 public class User {
     int id;
@@ -34,9 +8,6 @@ public class User {
     String google_id;
     int allergi;
 
-    Context context;
-
-    List<User> userList;
 
     public User() {
 

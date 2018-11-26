@@ -11,7 +11,7 @@
         android:layout_marginStart="8dp"
         android:textSize="24sp"
         android:layout_centerVertical="true"
-        android:text="10" />
+        android:text="@string/food_id" />
 
     <TextView
         android:id="@+id/holder"
@@ -20,7 +20,7 @@
         android:layout_marginStart="50dp"
         android:textSize="24sp"
         android:layout_centerVertical="true"
-        android:text=":  " />
+        android:text="@string/semicolon" />
 
     <TextView
         android:id="@+id/search_food_name_TV"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:text="Name Of Food" />
+        android:text="@string/name_of_food" />
 
     <TextView
         android:id="@+id/search_allergies_TV"
@@ -39,6 +39,6 @@
         android:textSize="12sp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
-        android:text="Allergies" />
+        android:text="@string/allergies" />
 
 </RelativeLayout>

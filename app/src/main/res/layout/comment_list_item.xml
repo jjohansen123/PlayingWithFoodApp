@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
-            android:text="firstname"
+            android:text="@string/firstname"
             android:textStyle="bold"
             android:textSize="12sp" />
 
@@ -37,7 +37,7 @@
         android:id="@+id/comment_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Comment"
+        android:text="@string/comment"
         android:layout_marginStart="8dp"
         android:textSize="12sp"
         android:layout_below="@id/top_of_comment"/>

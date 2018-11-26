@@ -6,22 +6,16 @@
 
     <Preference
         android:singleLine="true"
-        android:title="Upload new recipe" >
+        android:title="@string/upload_new_recipe" >
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="no.hiof.joakimj.remmenproject"
                 android:targetClass="no.hiof.joakimj.remmenproject.AddRecipeActivity"/>
     </Preference>
 
-    <ListPreference
-        android:defaultValue="@string/pref_units_metric"
-        android:entries="@array/pref_units_options"
-        android:entryValues="@array/pref_units_values"
-        android:key="@string/pref_units_key"
-        android:title="@string/pref_units_label" />
 
     <Preference
-        android:title="Set information"
+        android:title="@string/set_information"
         android:key="setInfoKey"/>
 
 

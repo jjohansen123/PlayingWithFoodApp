@@ -21,7 +21,6 @@ public class RegisterUserActivity extends AppCompatActivity {
 
     Integer allergiValue = 0;
 
-    private FirebaseAuth firebaseAuth;
     private String firstname, surname, userUrl, fullname, userUid;
     private EditText firstnameText, surnameText;
     private CheckBox cB1,cB2, cB3, cB4, cB5, cB6, cB7, cB8, cB9, cB10, cB11, cB12, cB13, cB14, cB15;
@@ -36,20 +35,17 @@ public class RegisterUserActivity extends AppCompatActivity {
         fullname = intent.getStringExtra("key_username");
 
         String[] parts = fullname.split("\\s+");
-        Log.i("Registrer", "Fullname: " + fullname + " " + parts.length);
 
         if(parts.length == 1) {
             firstname = parts[0];
-            surname = "Enter surname";
+            surname = getString(R.string.enter_surname);
         } else if(parts.length==2) {
             firstname = parts[0];
             surname = parts[1];
-            Log.i("Registrer", "firstname: " + firstname + " lastname: " + surname);
         } else if (parts.length==3) {
             firstname = parts[0];
             String middlename = parts[1];
             surname = parts[2];
-            Log.i("Registrer", "firstname: " + firstname + " lastname: " + surname);
         }
 
         firstnameText = findViewById(R.id.editFName);
@@ -89,7 +85,6 @@ public class RegisterUserActivity extends AppCompatActivity {
         cB15 = findViewById(R.id.checkBox15);
         cB15.setText("not yet implemented");
     }
-
 
 
     public void submitResult(View view) {
@@ -163,8 +158,6 @@ public class RegisterUserActivity extends AppCompatActivity {
                  BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
 
                  String value = reader.readLine();
-                 Log.i("TAG", "Result is: " + value);
-
              } catch (Exception e){
                  Log.i("TAG", "Something went wrong in sendRating: " + e);
              }

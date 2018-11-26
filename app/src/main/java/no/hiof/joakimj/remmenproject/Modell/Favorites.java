@@ -11,12 +11,9 @@ public class Favorites {
     static int length;
     String user_id;
 
-
-
     public Favorites() {
         // Default constructor required for calls to DataSnapshot.getValue(Favorites.class)
     }
-
 
     public Favorites(String food_id, String food_name, String user_id) {
         this.food_id = food_id;
