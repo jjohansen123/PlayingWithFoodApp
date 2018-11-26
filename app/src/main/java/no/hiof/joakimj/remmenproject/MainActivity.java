@@ -1,6 +1,5 @@
 package no.hiof.joakimj.remmenproject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.hiof.joakimj.remmenproject.Database.Database;
 import no.hiof.joakimj.remmenproject.Holder.CommentAdapter;
 import no.hiof.joakimj.remmenproject.Holder.SearchAdapter;
 import no.hiof.joakimj.remmenproject.Modell.Comment;
@@ -101,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     //    FirebaseDatabase database;
     DatabaseReference ratingTbl;
-    Database localDB;
     FirebaseDatabase firebaseDatabase;
 
 
@@ -153,9 +150,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        //Local Database
-        //ratingTbl = database.getReference("Rating");
-        localDB = new Database(this);
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         favDatabaseReference = firebaseDatabase.getReference("favorites");
 
