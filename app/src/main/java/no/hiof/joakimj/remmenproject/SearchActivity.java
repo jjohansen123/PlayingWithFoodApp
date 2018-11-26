@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,15 +34,14 @@ import no.hiof.joakimj.remmenproject.Holder.SearchAdapter;
 import no.hiof.joakimj.remmenproject.Modell.Food;
 
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchAdapter.ItemClickListener{
     
     RecyclerView recyclerView;
-    String Query, searchUrl;
+    SearchAdapter searchAdapter;
+    String searchUrl;
 
     List<Food> foodList;
-
     RequestQueue requestQueue;
-    DatabaseReference searchDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,23 +54,22 @@ public class SearchActivity extends AppCompatActivity {
                 .getString("Query");
 
         searchUrl = "http://81.166.82.90/foodsearch.php?foodName="+query;
-
         requestQueue = Volley.newRequestQueue(this);
 
         recyclerView = findViewById(R.id.searchRecyclerView); 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        searchAdapter = new SearchAdapter(this, foodList);
+        recyclerView.setAdapter(searchAdapter);
+        searchAdapter.setClickListener(this);
+
+
         foodList = new ArrayList<>();
-        
         displaySearchApi(searchUrl);
 
     }
 
     private void displaySearchApi(String searchUrl) {
-
-
-
-        Log.i("TAG", "kommer jeg hit 1");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, searchUrl, new Response.Listener<String>() {
             @Override
@@ -78,10 +77,6 @@ public class SearchActivity extends AppCompatActivity {
                 try {
                     JSONArray array = new JSONArray(response);
 
-                    Log.i("TAG", "kommer jeg hit 2 " + array.length());
-
-
-                    Log.i("TAG", "kommer jeg hit 12312 " + array.length());
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject food = array.getJSONObject(i);
 
@@ -90,9 +85,7 @@ public class SearchActivity extends AppCompatActivity {
                                 food.getString("foodName").toString(),
                                 food.getString("allergi")
                         ));
-
                     }
-                    Log.i("TAG", "kommer jeg hit 5");
                     SearchAdapter adapter = new SearchAdapter(SearchActivity.this, foodList);
                     recyclerView.setAdapter(adapter);
                 } catch (JSONException e) {
@@ -106,8 +99,13 @@ public class SearchActivity extends AppCompatActivity {
                         Toast.makeText(SearchActivity.this, "Error in Volley: " + error, Toast.LENGTH_SHORT).show();
                     }
         });
-        Log.i("TAG", "kommer jeg hit 6");
         Volley.newRequestQueue(this).add(stringRequest);
-        Log.i("TAG", "kommer jeg hit 7");
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        // The onClick implementation of the RecyclerView item click
+        final Food food = foodList.get(position);
+        Toast.makeText(this, "test " + food.getFood_id(), Toast.LENGTH_SHORT).show();
     }
 }

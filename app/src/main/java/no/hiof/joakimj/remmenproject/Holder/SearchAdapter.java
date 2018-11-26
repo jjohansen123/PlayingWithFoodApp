@@ -7,21 +7,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import no.hiof.joakimj.remmenproject.Modell.Food;
 import no.hiof.joakimj.remmenproject.R;
+import no.hiof.joakimj.remmenproject.SearchActivity;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder>{
 
     private Context context;
     private List<Food> foodList;
+    private ItemClickListener clickListener;
+
+    Food food;
 
     public SearchAdapter(Context context, List<Food> foodList) {
         this.context = context;
         this.foodList = foodList;
     }
+
 
     @NonNull
     @Override
@@ -34,7 +40,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder searchViewHolder, int i) {
-        Food food = foodList.get(i);
+        food = foodList.get(i);
 
         searchViewHolder.foodIdTextView.setText(food.getFood_id());
         searchViewHolder.foodNameTextView.setText(food.getFood_name());
@@ -43,20 +49,35 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return foodList == null ? 0 : foodList.size();
     }
 
 
-    class SearchViewHolder extends RecyclerView.ViewHolder {
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.clickListener = itemClickListener;
+    }
 
+
+    class SearchViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView foodNameTextView, foodIdTextView, allergiesTextView;
-
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
-
             foodIdTextView = itemView.findViewById(R.id.search_food_id_TV);
             foodNameTextView = itemView.findViewById(R.id.search_food_name_TV);
             allergiesTextView = itemView.findViewById(R.id.search_allergies_TV);
+            itemView.setTag(itemView);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            //clickListener.onClick(v,getPosition());
+            if(clickListener != null) clickListener.onClick(v, getAdapterPosition());
+        }
+    }
+
+
+    public interface ItemClickListener {
+        void onClick(View view, int position);
     }
 }
