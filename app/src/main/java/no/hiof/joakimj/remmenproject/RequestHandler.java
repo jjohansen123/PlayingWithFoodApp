@@ -16,12 +16,37 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
+/**
+ * Used this link to make a RequestHandler
+ * @link https://www.simplifiedcoding.net/android-upload-image-to-server-using-php-mysql/
+ */
 public class RequestHandler {
-    public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
+
+    public String sendGetRequest(String uri) {
+        try {
+            URL url = new URL(uri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            String result;
+
+            StringBuilder sb = new StringBuilder();
+
+            while((result = bufferedReader.readLine())!=null){
+                sb.append(result);
+            }
+
+            return sb.toString();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String sendPostRequest(String requestURL,
+                                  HashMap<String, String> postDataParams) {
 
         URL url;
-
-        StringBuilder sb = new StringBuilder();
+        String response = "";
         try {
             url = new URL(requestURL);
 
@@ -45,18 +70,15 @@ public class RequestHandler {
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                sb = new StringBuilder();
-                String response;
-                while ((response = br.readLine()) != null){
-                    sb.append(response);
-                }
+                response = br.readLine();
+            } else {
+                response = "Error Registering";
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("TAG", "Error converting result "+e.toString());
         }
-        return sb.toString();
+
+        return response;
     }
 
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
