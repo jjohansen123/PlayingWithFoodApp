@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         String i = rating.getRateValue();
         //hardcoded to not bug
-        String j = "2";
+        String j = valueOf(makeUser.getId());
         String k = rating.getFoodId();
         String l = rating.getComment();
 
@@ -428,9 +428,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
         String tempFoodId = foodId;
         String tempFoodName = foodNameText;
-        String tempUserId = "4";
-        String id = tempUserId;
-        Favorites favorites = new Favorites(tempFoodId,tempFoodName, tempUserId);
+
+        String id = valueOf(makeUser.getId());
+        Favorites favorites = new Favorites(tempFoodId,tempFoodName, valueOf(makeUser.getId()));
         favDatabaseReference.child(id).child(tempFoodId).setValue(favorites);
         Log.i("banana", tempFoodId);
         Toast.makeText(getApplicationContext(), "Favorited . . . " + id, Toast.LENGTH_LONG).show();
@@ -474,58 +474,9 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     }
 
     //get Json
-    public class foodinfo {
-        int id;
-        String foodName;
-        String content;
-        String comments;
-        String oppskrift;
-        String description;
-        List<String> allergi;
-    }
-
-    public List<String> allergiListe(int allergicode) {
-        int current_allergi = 65536;
-        List<String> output = new ArrayList<String>();
-
-        while (allergicode > 0) {
-            if (current_allergi > allergicode) {
-                current_allergi /= 2;
-            } else {
-                allergicode -= current_allergi;
-                output.add(allergiKodeTilNavn(current_allergi));
-                current_allergi /= 2;
-            }
-        }
-
-        return output;
-    }
-
-    public String allergiKodeTilNavn(int allergicode) {
-        switch (allergicode) {
-            case 1:
-                return getString(R.string.shellfish);
-            case 2:
-                return getString(R.string.lactose_milk);
-            case 4:
-                return getString(R.string.egg);
-            case 8:
-                return getString(R.string.peanutt);
-            case 16:
-                return getString(R.string.gluten_wheat);
-            case 32:
-                return getString(R.string.soy);
-            case 64:
-                return getString(R.string.fish);
-            case 128:
-                return getString(R.string.lupine);
-            default:
-                return getString(R.string.none);
-        }
-    }
 
     public void getData() {
-        final foodinfo output = new foodinfo();
+
         try {
             final JSONObject object = new JSONObject();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -635,13 +586,11 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
 
     public void getUserData() {
 
-        String shiturl = "http://81.166.82.90/userapi.php?google_id=" + userUid;
-        Log.i("TAG", " " + userUid);
+        String set_user_url = "http://81.166.82.90/userapi.php?google_id=" + userUid;
 
-        final foodinfo output = new foodinfo();
         try {
             final JSONObject object = new JSONObject();
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, shiturl, null, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, set_user_url, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
