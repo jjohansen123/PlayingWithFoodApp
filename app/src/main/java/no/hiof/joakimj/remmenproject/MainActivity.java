@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements RatingDialogListe
     RatingBar ratingBar;
     ArrayList<String> foodImages;
     List<Comment> commentList;
-    User makeUser;
+    public static User makeUser;
 
     //    FirebaseDatabase database;
     DatabaseReference ratingTbl;

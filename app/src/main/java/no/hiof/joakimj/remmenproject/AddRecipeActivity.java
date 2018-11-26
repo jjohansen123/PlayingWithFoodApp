@@ -19,14 +19,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
+
+import no.hiof.joakimj.remmenproject.Modell.User;
+
+import static java.lang.String.valueOf;
 
 public class AddRecipeActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String UPLOAD_URL = "http://81.166.82.90/imageuploader.php";
+
     public static final String UPLOAD_KEY_IMAGE = "image";
     public static final String UPLOAD_KEY_FOODNAME = "foodname";
     public static final String UPLOAD_KEY_ALLERGIER = "allergier";
@@ -36,6 +45,9 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
     private int PICK_IMAGE_REQUEST = 1;
 
+    Integer allergiValue = 0;
+    String UPLOAD_URL_RECIPE = "";
+
     private Button btnUploadRecipe, btnViewImage, btnChooseImage;
     private CheckBox cB1,cB2, cB3, cB4, cB5, cB6, cB7, cB8, cB9, cB10, cB11, cB12, cB13, cB14, cB15;
     private EditText nameEditText, commentEditText, descriptionEditText;
@@ -43,11 +55,14 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     private Bitmap bitmap;
     private Uri filePath;
 
+    User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
+        user = MainActivity.makeUser;
         btnChooseImage = findViewById(R.id.buttonChoose);
         btnUploadRecipe = findViewById(R.id.buttonUpload);
         btnViewImage = findViewById(R.id.buttonViewImage);
@@ -94,15 +109,76 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    public int getAllergies() {
+        if(cB1.isChecked()) {
+            allergiValue += 1;
+        }
+        if(cB2.isChecked()) {
+            allergiValue += 2;
+        }
+        if(cB3.isChecked()) {
+            allergiValue += 4;
+        }
+        if(cB4.isChecked()) {
+            allergiValue += 8;
+        }
+        if(cB5.isChecked()) {
+            allergiValue += 16;
+        }
+        if(cB6.isChecked()) {
+            allergiValue += 32;
+        }
+        if(cB7.isChecked()) {
+            allergiValue += 64;
+        }
+        if(cB8.isChecked()) {
+            allergiValue += 128;
+        }
+        if(cB9.isChecked()) {
+            allergiValue += 256;
+        }
+        if(cB10.isChecked()) {
+            allergiValue += 512;
+        }
+        if(cB11.isChecked()) {
+            allergiValue += 1024;
+        }
+        if(cB12.isChecked()) {
+            allergiValue += 2048;
+        }
+        if(cB13.isChecked()) {
+            allergiValue += 4096;
+        }
+        if(cB14.isChecked()) {
+            allergiValue += 8192;
+        }
+        if(cB15.isChecked()) {
+            allergiValue += 16384;
+        }
+
+        return allergiValue;
+    }
+
     @Override
     public void onClick(View v) {
         if(v == btnChooseImage) {
             showFileChooser(); 
         }
         if(v == btnUploadRecipe) {
-            uploadImage();
-            uploadRecipe();
 
+            Log.i("tag", "urlasdasd " + user.getId());
+            allergiValue = getAllergies();
+
+            UPLOAD_URL_RECIPE = "http://81.166.82.90/fooduploader.php?foodName=" + nameEditText.getText().toString()
+                    + "&user_id=" + valueOf(user.getId())
+                    + "&allergier=" + allergiValue.toString()
+                    + "&comment=" + commentEditText.getText().toString()
+                    + "&description=" + descriptionEditText.getText().toString();
+
+            Log.i("tag", "url" + UPLOAD_URL_RECIPE);
+            new SendRecipe().execute();
+
+            uploadImage();
         }
     }
 
@@ -190,10 +266,39 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
         UploadImage ui = new UploadImage();
         ui.execute(bitmap);
+
+
     }
 
 
-    private void uploadRecipe() {
+    public void submitResult() {
+
+
+        //uploadImage();
+    }
+
+
+    public class SendRecipe extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                URL url = new URL(UPLOAD_URL_RECIPE);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+
+                String value = reader.readLine();
+                Log.i("TAG", "Result is: " + value);
+
+            } catch (Exception e){
+                Log.i("TAG", "Something went wrong in sendRating: " + e);
+            }
+            return null;
+
+        }
+
     }
 
 
